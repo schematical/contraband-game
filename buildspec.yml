@@ -8,7 +8,7 @@ phases:
       - pwd
       - service docker start
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION | sed -e 's/-e none//g')
   build:
     commands:
       - cd ./frontend
