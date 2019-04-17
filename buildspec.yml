@@ -8,7 +8,6 @@ phases:
       - whoami
       - echo $PATH
       - /root/.nvm/versions/node/v8.15.1/bin/node -v
-      - which node
       - node -v
       - pwd
       - service docker start
