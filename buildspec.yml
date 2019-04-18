@@ -9,6 +9,7 @@ phases:
       - echo $PATH
       - /root/.nvm/versions/node/v8.15.1/bin/node -v
       - ls -la /usr/bin/node
+      - nvm use default
       - node -v
       - pwd
       - service docker start
