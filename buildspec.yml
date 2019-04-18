@@ -30,13 +30,14 @@ phases:
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
     commands:
+      - cd ..
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - printf '[{"name":"%s","imageUri":"%s"}]' $ECS_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
       - echo Pushing files to S3
-      - aws s3 cp ../frontend/build s3://games.schematical.com/ --recursive --acl public-read
+      - aws s3 cp ./frontend/build s3://games.schematical.com/ --recursive --acl public-read
 artifacts:
   files:
     - imagedefinitions.json
