@@ -8,7 +8,6 @@ phases:
       - whoami
       - echo $PATH
       - ls -la /usr/bin/node
-      - nvm use default
       - node -v
       - pwd
       - service docker start
