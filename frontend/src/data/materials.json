@@ -1,0 +1,42 @@
+[
+  {
+    "namespace": "schematical:material:none",
+    "name": "none",
+    "hitpoints": 0,
+    "color": "#ffffff"
+  },
+  {
+    "namespace": "schematical:material:plastic",
+    "name": "plastic",
+    "hitpoints": 2,
+    "color": "#00ff00"
+  },
+  {
+    "namespace": "schematical:material:wood",
+    "name": "wood",
+    "hitpoints": 10,
+    "color": "#8c6400"
+  },
+  {
+    "namespace": "schematical:material:glass",
+    "name": "glass",
+    "hitpoints": 2,
+    "color": "#8ed5ff"
+  },
+  {
+    "namespace": "schematical:material:cement",
+    "name": "cement",
+    "hitpoints": 25,
+    "color": "#d6d6d6"
+  },
+  {
+    "namespace": "schematical:material:steel",
+    "name": "steel",
+    "hitpoints": 50
+  },
+  {
+    "namespace": "schematical:material:canvas",
+    "name": "canvas",
+    "hitpoints": 25
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "namespace": "schematical:occupation:janitor",
+    "name": "janitor",
+    "notes": "TODO: Give bonus",
+    "perks": [
+      {
+        "stat": "schematical:population_stat:germ_level",
+        "effect": -10
+      }
+    ]
+  }
+]

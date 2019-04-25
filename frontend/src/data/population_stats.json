@@ -1,0 +1,38 @@
+[
+  {
+    "namespace": "schematical:population_stats:health",
+    "name": "health",
+    "startValue": 100
+
+  },
+  {
+    "namespace": "schematical:population_stats:moral",
+    "name": "moral",
+    "startValue": 50
+
+  },
+  {
+    "namespace": "schematical:population_stats:germ_level",
+    "name": "germ_level",
+    "startValue": 1
+
+  },
+  {
+    "namespace": "schematical:population_stats:food_consumption_rate",
+    "name": "food consumption rate",
+    "startValue": 3
+
+  },
+  {
+    "namespace": "schematical:population_stats:water_consumption_rate",
+    "name": "food consumption rate",
+    "startValue": 8
+  },
+  {
+    "namespace": "schematical:population_stats:reputation",
+    "name": "reputation",
+    "startValue": 50
+  }
+
+
+]
