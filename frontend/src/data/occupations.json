@@ -9,5 +9,13 @@
         "effect": -10
       }
     ]
+  },
+  {
+    "namespace": "schematical:occupation:police",
+    "name": "Police Officer",
+    "notes": "TODO: Give bonus",
+    "perks": [
+
+    ]
   }
 ]

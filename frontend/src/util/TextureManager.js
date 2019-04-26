@@ -41,7 +41,7 @@ class TextureManager{
     }
     getNPCAllieObservedDefault(){
         if(!this.cache["AllieObservedDefault"]){
-            return this.cache["AllieObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#000088", 255);
+            return this.cache["AllieObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#6666ff", 255);
         }
         return this.cache["AllieObservedDefault"];
     }

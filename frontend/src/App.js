@@ -3,7 +3,7 @@ import buildings from './data/buildings.json';
 import events from './data/events.json';
 import materials from './data/materials.json';
 import occupations from './data/occupations.json';
-import populationStats from './data/population_stats.json';
+import populationStats from './data/npc_stats.json';
 import './App.css';
 import * as PIXI from 'pixi.js';
 import NavBarComponent from "./components/NavBarComponent";
@@ -14,6 +14,8 @@ import Map from './model/map';
 import NPC from "./model/npc";
 import TextureManager from "./util/TextureManager";
 import Faction from "./model/faction";
+import NPCDetailComponent from './components/NPCDetailComponent';
+import LotDetailComponent from "./components/LotDetailComponent";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -58,7 +60,7 @@ class App extends Component {
         occupations.forEach((data)=>{
             occupationsReg.add(data.namespace, data);
         });
-        let populationStatsReg = this.registry.add('population_stats');
+        let populationStatsReg = this.registry.add('npc_stats');
         populationStats.forEach((data)=>{
             populationStatsReg.add(data.namespace, data);
         });
@@ -70,7 +72,7 @@ class App extends Component {
           <NavBarComponent />
           <HeaderComponent />
           <div className="row">
-              <div className="span3 bs-docs-sidebar">
+              <div className="span5 bs-docs-sidebar">
                   {/*{ this.state.selected_building &&
                       <ul className="nav nav-list bs-docs-sidenav">
                           <li><a href="#download-bootstrap">{this.registry.buildings.get(this.state.selected_building.type).name}</a></li>
@@ -82,34 +84,13 @@ class App extends Component {
                       </ul>
                   }*/}
                   { this.state.selected_lot &&
-                  <ul className="nav nav-list bs-docs-sidenav">
-                      <li><a href="#download-bootstrap">LOT {this.state.selected_lot.x}, {this.state.selected_lot.y}</a></li>
-                      {this.state.selected_lot.npcs.map((value, index) => {
-                          return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
-                      })}
-                      <li className="divider"></li>
-                      {this.state.selected_lot.buildings.map((building, index) => {
-                          return <div>
-                          <li>
-                              <a href="#file-structure">
-                                  <i className="icon-chevron-right"></i>
-                                  {this.registry.buildings.get(building.type).name} {index}
-                              </a>
-                          </li>
-                          {building.npcs.map((npc, index2) => {
-                              return <li>
-                                  <a href="#file-structure">
-                                      <i className="icon-chevron-right"></i>
-                                      {npc.type} {index2}
-                                  </a>
-                              </li>;
-                          })}
-                          </div>
-                      })}
-                  </ul>
+                  <LotDetailComponent app={this} lot={this.state.selected_lot} />
+                  }
+                  {this.state.selected_npc &&
+                  <NPCDetailComponent app={this} npc={this.state.selected_npc}/>
                   }
               </div>
-              <div className="span9" >
+              <div className="span7" >
                   <button onClick={this.start}>Start</button>
                   {this.state.text }
               </div>
@@ -159,14 +140,16 @@ class App extends Component {
       this.factions.push(faction);
       let startLot = this.map.get(0,0 );
       for(let i = 0; i < 4 ; i++){
-          console.log("Adding NPC: ", i);
+          let npc = this.addNPC({
+              type: NPC.Type.HUMAN,
+              faction: faction,
+              lot: startLot
+          })
+          npc.populateDefaults();
+          npc.populateRandom();
           startLot.npcs.push(
-              this.addNPC({
-                  type: NPC.Type.HUMAN,
-                  faction: faction,
-                  lot: startLot
-              })
-          )
+              npc
+          );
 
       }
       startLot.shuffleNPCSLotPos();
@@ -225,16 +208,32 @@ class App extends Component {
 
   }
   addNPC(data){
+      data.app = this;
       let npc = new NPC(data);
       this.npcs.push(npc);
       return npc;
   }
   selectTile(lot){
-    if(this.state.selected_lot){
-       this.state.selected_lot.guiDeselect();
-    }
+      this.guiClearSelection();
       this.setState({selected_lot: lot});
-      this.state.selected_lot.guiSelect();
+      lot.guiSelect();
+  }
+  guiClearSelection(){
+      if(this.state.selected_lot){
+          this.state.selected_lot.guiDeselect();
+          this.state.selected_lot = null;
+
+      }
+      if(this.state.selected_npc){
+          this.state.selected_npc.guiDeselect();
+          this.state.selected_npc = null;
+      }
+      this.setState({selected_lot: null, selected_npc: null});
+  }
+  guiSelectNPC(npc){
+      this.guiClearSelection();
+      this.setState({selected_npc: npc});
+
   }
 
 }

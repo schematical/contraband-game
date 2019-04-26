@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import {Helper} from "../util/Helper";
 import * as PIXI from "pixi.js";
+import  names from '../data/names';
 class NPC{
     static get Type(){
         return {
@@ -10,9 +11,25 @@ class NPC{
     }
 
     constructor(data){
-
+        this.traits = [];
+        this.stats = {};
         _.extend(this, data);
 
+
+    }
+    populateDefaults(){
+        //Iterate through all stats
+        let stats = this.app.registry.npc_stats.list();
+
+        Object.keys(stats).forEach((namespace)=>{
+            this.stats[namespace] = stats[namespace].startValue;
+        })
+    }
+    populateRandom(){
+
+        this.name = names[Math.floor(Math.random() * names.length)] += " ";
+        this.name += names[Math.floor(Math.random() * names.length)].substr(0,1) + '.';
+        this.occupation  = this.app.registry.occupations.rnd();
 
     }
     render(container){
@@ -105,6 +122,9 @@ class NPC{
     updateScreenPos(){
         this.sprite.x = this.lotPos.x * 16;
         this.sprite.y = this.lotPos.y * 16;
+    }
+    guiDeselect(){
+
     }
 
 }
