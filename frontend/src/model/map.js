@@ -19,7 +19,11 @@ class Map{
                 x: x,
                 y: y
             })
-            lot.populateRandom();
+            if(x != 0 || y != 0) {
+                lot.populateRandom();
+            }else{
+                lot.cacheEmptyTiles();
+            }
             this.cols[x][y] = lot;
         }
         return lot;

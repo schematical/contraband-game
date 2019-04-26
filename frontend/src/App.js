@@ -13,6 +13,7 @@ import seedrandom  from 'seedrandom';
 import Map from './model/map';
 import NPC from "./model/npc";
 import TextureManager from "./util/TextureManager";
+import Faction from "./model/faction";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -32,6 +33,7 @@ class App extends Component {
         this.gui.text = "";
         this.npcs =[];
         this.textureManager = new TextureManager();
+        this.factions = [];
 
     }
     setupRegistry(){
@@ -87,7 +89,7 @@ class App extends Component {
                       })}
                       <li className="divider"></li>
                       {this.state.selected_lot.buildings.map((building, index) => {
-                          return <span>
+                          return <div>
                           <li>
                               <a href="#file-structure">
                                   <i className="icon-chevron-right"></i>
@@ -102,7 +104,7 @@ class App extends Component {
                                   </a>
                               </li>;
                           })}
-                          </span>
+                          </div>
                       })}
                   </ul>
                   }
@@ -144,15 +146,30 @@ class App extends Component {
                 this.map.get(x,y );
             }
         }
-
+        this.populateStartTeam();
       this.map.render( this.pixicontainer );
 
-/*          const bunny = new PIXI.Sprite( this.textures.bunny );
-          bunny.anchor.set(0.5);
 
-          this.pixicontainer.addChild(bunny);*/
+  }
+  populateStartTeam(){
+    //TODO: Pormpt player name
+      let faction = new Faction({
+          "namespace":"player_1"
+      })
+      this.factions.push(faction);
+      let startLot = this.map.get(0,0 );
+      for(let i = 0; i < 4 ; i++){
+          console.log("Adding NPC: ", i);
+          startLot.npcs.push(
+              this.addNPC({
+                  type: NPC.Type.HUMAN,
+                  faction: faction,
+                  lot: startLot
+              })
+          )
 
-
+      }
+      startLot.shuffleNPCSLotPos();
   }
   setupCanvas(){
 

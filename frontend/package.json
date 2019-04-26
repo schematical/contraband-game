@@ -9,7 +9,8 @@
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
     "seedrandom": "^3.0.1",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "mod-registry": "git@github.com:schematical/mod-registry-js.git"
   },
   "scripts": {
     "start": "react-scripts start",

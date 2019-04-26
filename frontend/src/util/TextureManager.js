@@ -29,15 +29,21 @@ class TextureManager{
     }
     getNPCZombieObservedDefault(){
         if(!this.cache["NPCZombieObservedDefault"]){
-            return this.cache["NPCZombieObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#666666", 64);
+            return this.cache["NPCZombieObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#008800", 255);
         }
         return this.cache["NPCZombieObservedDefault"];
     }
     getNPCCivilianObservedDefault(){
         if(!this.cache["NPCCivilianObservedDefault"]){
-            return this.cache["NPCCivilianObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#008800", 255);
+            return this.cache["NPCCivilianObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#666666", 255);
         }
         return this.cache["NPCCivilianObservedDefault"];
+    }
+    getNPCAllieObservedDefault(){
+        if(!this.cache["AllieObservedDefault"]){
+            return this.cache["AllieObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#000088", 255);
+        }
+        return this.cache["AllieObservedDefault"];
     }
     getBuildingTileDefault(tile){
         let color = Helper.hexToRgb(tile.building.primaryMaterial.color);

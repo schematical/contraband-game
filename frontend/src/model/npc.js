@@ -18,13 +18,19 @@ class NPC{
     render(container){
 
 
-        let texture = this.lot.app.textureManager.getNPCCivilianObservedDefault();
+        let texture = null;
 
         switch(this.type){
             case(NPC.Type.ZOMBIE):
                 texture = this.lot.app.textureManager.getNPCZombieObservedDefault();
 
             break;
+            case(NPC.Type.HUMAN):
+                if(this.faction) {//TODO: Check if its the players faction
+                    texture = this.lot.app.textureManager.getNPCAllieObservedDefault();
+                }else{
+                    texture = this.lot.app.textureManager.getNPCCivilianObservedDefault();
+                }
 
 
         }

@@ -11,6 +11,7 @@ class Lot{
 
         this.cols = [];
         this.buildings = [];
+        this.npcs = [];
         this.observed = true;//TODO: Make this real
         _.extend(this, data);
 
@@ -28,6 +29,15 @@ class Lot{
 
 
 
+        this.cacheEmptyTiles();
+
+        this.populateNPCs();
+
+
+
+
+    }
+    cacheEmptyTiles(){
         this.emptyTileCoords = [];
         for(let x = 0; x < 4; x++){
             for(let y = 0; y < 4; y++){
@@ -40,12 +50,6 @@ class Lot{
                 }
             }
         }
-
-        this.populateNPCs();
-
-
-
-
     }
     populateNPCs(){
         this.npcs = [];
@@ -81,6 +85,10 @@ class Lot{
         }
 
 
+        this.shuffleNPCSLotPos();
+
+    }
+    shuffleNPCSLotPos(){
         let npcsToTilesRatio =  this.emptyTileCoords.length / this.npcs.length ;
         let index = 0;
         _.shuffle(this.npcs).forEach((npc)=>{
@@ -90,7 +98,6 @@ class Lot{
             }
             index += npcsToTilesRatio;
         });
-
     }
     populateRandomBuilding(){
 
