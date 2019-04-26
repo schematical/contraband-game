@@ -17,47 +17,20 @@ class NPC{
     }
     render(container){
 
-        var canvas = document.getElementById("sketchPad")
-        var ctx = canvas.getContext('2d');
 
-        let size = 4;
-        ctx.clearRect(0,0,  canvas.width, canvas.height);
-        var img = new ImageData(size, size);
-        let colorStr = "#ff0000";//"#666666";
+        let texture = this.lot.app.textureManager.getNPCCivilianObservedDefault();
 
         switch(this.type){
             case(NPC.Type.ZOMBIE):
-                colorStr = "#008800";
+                texture = this.lot.app.textureManager.getNPCZombieObservedDefault();
 
             break;
 
 
         }
-        let color = Helper.hexToRgb(colorStr);
-        let i = 0;
-        for(let y = 0; y < size; y++){
-            for(let x = 0; x < size; x++){
 
 
-                let multiplier = 1;
-
-                img.data[i * 4] = color.r * multiplier;
-                img.data[i * 4 + 1] = color.g * multiplier;
-                img.data[i * 4 + 2] = color.b * multiplier;
-                img.data[i * 4 + 3] = 255;
-
-                //bmp.pixel[x][y] = color;
-                i++;
-            }
-        }
-
-        ctx.putImageData(img, 0, 0);
-        //	set pixel colour, components in the range [0, 1]
-        //bmp.subsample(n)//	scale down by integer factor n
-        let url = canvas.toDataURL()
-
-        let texture = PIXI.Texture.fromImage(url);
-        this.sprite = new PIXI.Sprite((texture));// this.lot.app.textures.bunny ));
+        this.sprite = new PIXI.Sprite(texture);
         //sprite.anchor.set(0.5);
         this.updateScreenPos();
         container.addChild(this.sprite);

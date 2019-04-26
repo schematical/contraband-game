@@ -48,16 +48,12 @@ class Tile{
         this.sprite.y = (this.y) * 16;
         container.addChild(this.sprite);
         // Opt-in to interactivity
-        this.sprite.interactive = true;
-
-// Shows hand cursor
+        /*this.sprite.interactive = true;
         this.sprite.buttonMode = true;
-
-// Pointers normalize touch and mouse
         this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
         this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
         this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
-
+*/
             //.on('pointerup', onButtonUp)
             //.on('pointerupoutside', onButtonUp)
 

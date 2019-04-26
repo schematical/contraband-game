@@ -12,6 +12,7 @@ import ModRegistry from "mod-registry";
 import seedrandom  from 'seedrandom';
 import Map from './model/map';
 import NPC from "./model/npc";
+import TextureManager from "./util/TextureManager";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -30,6 +31,7 @@ class App extends Component {
         this.gui = {};
         this.gui.text = "";
         this.npcs =[];
+        this.textureManager = new TextureManager();
 
     }
     setupRegistry(){
@@ -67,20 +69,20 @@ class App extends Component {
           <HeaderComponent />
           <div className="row">
               <div className="span3 bs-docs-sidebar">
-                  { this.state.selected_building &&
+                  {/*{ this.state.selected_building &&
                       <ul className="nav nav-list bs-docs-sidenav">
-                          <li><a href="#download-bootstrap">{this.state.selected_building.type}</a></li>
+                          <li><a href="#download-bootstrap">{this.registry.buildings.get(this.state.selected_building.type).name}</a></li>
                             {this.state.selected_building.npcs.map((value, index) => {
                                       return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
                                 })
                             }
 
                       </ul>
-                  }
-                  { this.state.selected_tile &&
+                  }*/}
+                  { this.state.selected_lot &&
                   <ul className="nav nav-list bs-docs-sidenav">
-                      <li><a href="#download-bootstrap">{this.state.selected_tile.x}, {this.state.selected_tile.y}</a></li>
-                      {this.state.selected_tile.npcs.map((value, index) => {
+                      <li><a href="#download-bootstrap">LOT {this.state.selected_lot.x}, {this.state.selected_lot.y}</a></li>
+                      {this.state.selected_lot.npcs.map((value, index) => {
                           return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
                       })
                       }
@@ -106,13 +108,18 @@ class App extends Component {
         })
 
 // Listen for animate update
+      let tickCycle = 0;
         app.ticker.add((delta) => {
             this.npcs.forEach((npc)=>{
                 if(!npc.lot){
                     console.log("Missing LOT");
                   return;
                 }
-                npc.wonder(delta);
+                tickCycle += delta;
+                if(tickCycle > 5) {
+                    npc.wonder(delta);
+                    tickCycle = 0;
+                }
             })
         });
 
@@ -155,8 +162,7 @@ class App extends Component {
       });
 
       this.pixi.stage.addChild(this.pixicontainer);
-      // Create a new texture
-      this.textures = {};
+
 
 
 
@@ -180,6 +186,8 @@ class App extends Component {
           .wheel()
           .decelerate();
 
+      this.pixicontainer.zoom(-512);
+
 
 
   }
@@ -187,6 +195,13 @@ class App extends Component {
       let npc = new NPC(data);
       this.npcs.push(npc);
       return npc;
+  }
+  selectTile(lot){
+    if(this.state.selected_lot){
+       this.state.selected_lot.guiDeselect();
+    }
+      this.setState({selected_lot: lot});
+      this.state.selected_lot.guiSelect();
   }
 
 }
