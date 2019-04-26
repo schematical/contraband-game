@@ -92,26 +92,33 @@ class NPC{
                 return true;
             }else{
                 this.transitioningLots = true;
-                this.lot.removeNPC(this);
 
-                destLot.addNPC(this);
-                this.sprite.setParent(destLot.sprite);
                 let newX = this.goalLotPos.x;
                 if(x < 0){
-                    newX =  3.5;
+                    newX =  3.9;
                 }else if( x > 0){
-                    newX = .5;
+                    newX = .1;
                 }
                 let newY = this.goalLotPos.y;
                 if(y < 0){
-                    newY = 3.5;
+                    newY = 3.9;
                 }else if( y > 0){
-                    newY = .5;
+                    newY = .1;
                 }
                 this.goalLotPos = {
                     x: newX,
                     y: newY
                 }
+                let tile = destLot.getTile(Math.floor(this.goalLotPos.x), Math.floor(this.goalLotPos.y));
+                if(tile){
+                    //There is a building there.
+                    return false;
+
+                }
+                this.lot.removeNPC(this);
+
+                destLot.addNPC(this);
+                this.sprite.setParent(destLot.sprite);
                 console.log("CHUCKLOADED, Moving: ", debutId, this.goalLotPos);
                 return true;
             }
