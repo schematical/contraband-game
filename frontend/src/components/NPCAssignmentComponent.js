@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 
-class NPCDetailComponent extends Component {
+class NPCAssignmentComponent extends Component {
   constructor(props){
     super(props);
     this.app = props.app;
@@ -41,4 +41,4 @@ class NPCDetailComponent extends Component {
 
 }
 
-export default NPCDetailComponent;
+export default NPCAssignmentComponent;

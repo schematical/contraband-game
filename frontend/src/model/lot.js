@@ -7,12 +7,20 @@ import NPC from "./npc";
 import {Helper} from "../util/Helper";
 import _ from "underscore";
 class Lot{
+    static get States(){
+        return {
+            OBSERVED: "OBSERVED",
+            EXPLORED: "EXPLORED",
+            OCCUPIED: "OCCUPIED",
+            MAPPED: "MAPPED"
+        }
+    }
     constructor(data){
 
         this.cols = [];
         this.buildings = [];
         this.npcs = [];
-        this.observed = true;//TODO: Make this real
+        this.factionLotStates = {};
         _.extend(this, data);
 
     }
@@ -23,6 +31,26 @@ class Lot{
         let tile = this.cols[x][y] || null;
 
         return tile;
+    }
+    getFactionLotState(faction, state){
+        this.factionLotStates[faction.namespace] = this.factionLotStates[faction.namespace] || {};
+        return this.factionLotStates[faction.namespace][state] || false;
+    }
+    setFactionLotState(faction, state, value){
+        this.factionLotStates[faction.namespace] = this.factionLotStates[faction.namespace] || {};
+        this.factionLotStates[faction.namespace][state] = value;
+    }
+    resetFactionLotStates(faction){
+        //Just reset Observed for now
+        this.factionLotStates[faction.namespace] = this.factionLotStates[faction.namespace] || {};
+        Object.keys(Lot.States).forEach((state)=>{
+            switch(state){
+                case(Lot.States.OBSERVED):
+                case(Lot.States.OCCUPIED):
+                    this.factionLotStates[faction.namespace][state] = false;
+
+            }
+        })
     }
     populateRandom(){
         this.populateRandomBuilding();
@@ -159,6 +187,9 @@ class Lot{
     render(container){
         let size = 64;
         let texture = this.app.textureManager.getLotObservedDefault();
+        if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
+            texture = this.app.textureManager.getLotObservedDefault();
+        }
         this.sprite = new PIXI.Sprite(texture);
         //sprite.anchor.set(0.5);
         this.sprite.x = this.x * (size + 8);
@@ -173,12 +204,16 @@ class Lot{
         this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
         this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
         container.addChild(this.sprite);
-        this.eachTile((tile)=>{
-            tile.render(this.sprite);//this.container);
-        })
-        this.npcs.forEach((npc)=>{
-           npc.render(this.sprite);
-        });
+        if(this.getFactionLotState(this.app.playerFaction, Lot.States.MAPPED)) {
+            this.eachTile((tile) => {
+                tile.render(this.sprite);//this.container);
+            })
+        }
+        if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
+            this.npcs.forEach((npc) => {
+                npc.render(this.sprite);
+            });
+        }
 
     }
     getTile(x, y){

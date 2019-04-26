@@ -30,11 +30,11 @@ class NavBarComponent extends Component {
                                 </ul>
                             </li>
                         </ul>
-                        <form className="navbar-form pull-right">
+                        {/*<form className="navbar-form pull-right">
                             <input className="span2" type="text" placeholder="Email" />
-                                <input className="span2" type="password" placeholder="Password" />
-                                <button type="submit" className="btn">Sign in</button>
-                        </form>
+                            <input className="span2" type="password" placeholder="Password" />
+                            <button type="submit" className="btn">Sign in</button>
+                        </form>*/}
                     </div>
 
                 </div>

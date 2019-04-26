@@ -16,6 +16,7 @@ import TextureManager from "./util/TextureManager";
 import Faction from "./model/faction";
 import NPCDetailComponent from './components/NPCDetailComponent';
 import LotDetailComponent from "./components/LotDetailComponent";
+import Lot from "./model/lot";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -111,7 +112,7 @@ class App extends Component {
       let tickCycle = 0;
         app.ticker.add((delta) => {
             this.npcs.forEach((npc)=>{
-                if(!npc.lot || !npc.lot.observed){
+                if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
                   return;
                 }
                 tickCycle += delta;
@@ -128,21 +129,22 @@ class App extends Component {
             }
         }
         this.populateStartTeam();
+        this.refreshFactionLotStates();
       this.map.render( this.pixicontainer );
 
 
   }
   populateStartTeam(){
     //TODO: Pormpt player name
-      let faction = new Faction({
+      this.playerFaction = new Faction({
           "namespace":"player_1"
       })
-      this.factions.push(faction);
+      this.factions.push(this.playerFaction );
       let startLot = this.map.get(0,0 );
       for(let i = 0; i < 4 ; i++){
           let npc = this.addNPC({
               type: NPC.Type.HUMAN,
-              faction: faction,
+              faction: this.playerFaction ,
               lot: startLot
           })
           npc.populateDefaults();
@@ -153,6 +155,29 @@ class App extends Component {
 
       }
       startLot.shuffleNPCSLotPos();
+  }
+  refreshFactionLotStates(){
+        this.map.each((lot)=>{
+            this.factions.forEach((faction)=>{
+                lot.resetFactionLotStates(faction);
+            })
+        })
+        this.npcs.forEach((npc)=>{
+            if(!npc.faction){
+                return;
+            }
+            npc.lot.setFactionLotState(npc.faction, Lot.States.EXPLORED, true);
+            npc.lot.setFactionLotState(npc.faction, Lot.States.OCCUPIED, true);
+            npc.lot.setFactionLotState(npc.faction, Lot.States.OBSERVED, true);
+            npc.lot.setFactionLotState(npc.faction, Lot.States.MAPPED, true);
+            for(let x = npc.lot.x - 1; x < npc.lot.x + 2; x++){
+                for(let y = npc.lot.y - 1; y < npc.lot.y + 2; y++){
+                    let lot = this.map.get(x, y);
+                    lot.setFactionLotState(npc.faction, Lot.States.OBSERVED, true);
+                    lot.setFactionLotState(npc.faction, Lot.States.MAPPED, true);
+                }
+            }
+        })
   }
   setupCanvas(){
 
