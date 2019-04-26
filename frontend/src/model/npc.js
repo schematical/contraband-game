@@ -24,7 +24,7 @@ class NPC{
         ctx.clearRect(0,0,  canvas.width, canvas.height);
         var img = new ImageData(size, size);
         let colorStr = "#ff0000";//"#666666";
-        console.log("Rendering: ", this.type);
+
         switch(this.type){
             case(NPC.Type.ZOMBIE):
                 colorStr = "#008800";
@@ -59,8 +59,7 @@ class NPC{
         let texture = PIXI.Texture.fromImage(url);
         this.sprite = new PIXI.Sprite((texture));// this.lot.app.textures.bunny ));
         //sprite.anchor.set(0.5);
-        this.sprite.x = (this.lotPos.x) * 16;
-        this.sprite.y = (this.lotPos.y) * 16;
+        this.updateScreenPos();
         container.addChild(this.sprite);
         // Opt-in to interactivity
         this.sprite.interactive = true;
@@ -72,7 +71,7 @@ class NPC{
         this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
         this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
         this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
-        console.log("NPC Rendered: ", this.sprite.x, this.sprite.y);
+
     }
     onPointerDown(){
         this.lot.app.setState({selected_npc: this});
@@ -84,6 +83,25 @@ class NPC{
     }
     onPointerOut(){
         this.lot.app.setState({text: ""});
+    }
+    wonder(delta){
+        if(!this.sprite){
+            return;
+        }
+        if(!this.velocity){
+            this.velocity = {
+                x: Math.round(this.lot.app.rnd() * 2) - 1,
+                y: Math.round(this.lot.app.rnd() * 2) - 1
+            }
+        }
+        this.lotPos.x += this.velocity.x * .01 * delta;
+        this.lotPos.y += this.velocity.y * .01 * delta;
+        this.updateScreenPos();
+
+    }
+    updateScreenPos(){
+        this.sprite.x = this.lotPos.x * 16;
+        this.sprite.y = this.lotPos.y * 16;
     }
 
 }

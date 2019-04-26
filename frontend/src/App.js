@@ -11,6 +11,7 @@ import HeaderComponent from "./components/HeaderComponent";
 import ModRegistry from "mod-registry";
 import seedrandom  from 'seedrandom';
 import Map from './model/map';
+import NPC from "./model/npc";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -28,6 +29,7 @@ class App extends Component {
         this.start = this.start.bind(this);
         this.gui = {};
         this.gui.text = "";
+        this.npcs =[];
 
     }
     setupRegistry(){
@@ -105,7 +107,13 @@ class App extends Component {
 
 // Listen for animate update
         app.ticker.add((delta) => {
-
+            this.npcs.forEach((npc)=>{
+                if(!npc.lot){
+                    console.log("Missing LOT");
+                  return;
+                }
+                npc.wonder(delta);
+            })
         });
 
         for(let x = -6; x < 6; x++){
@@ -174,6 +182,11 @@ class App extends Component {
 
 
 
+  }
+  addNPC(data){
+      let npc = new NPC(data);
+      this.npcs.push(npc);
+      return npc;
   }
 
 }

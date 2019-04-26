@@ -12,11 +12,12 @@ class Building{
 
         let npcChance = Math.floor((this.lot.app.rnd() * 25) - 20);
 
-        for(let i = (npcChance ); i > 0; i -= 1){
+        for(let i = (npcChance); i > 0; i -= 1){
             this.npcs.push(
-                new NPC({
+                this.lot.app.addNPC({
                     type: NPC.Type.HUMAN,
-                    faction: null//CIVILIAN ??
+                    faction: null,//CIVILIAN ??,
+                    lot: this.lot
                 })
             )
         }

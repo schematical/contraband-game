@@ -8,21 +8,18 @@ import {Helper} from "../util/Helper";
 import _ from "underscore";
 class Lot{
     constructor(data){
-        this.app = data.app;
+
         this.cols = [];
-        this.x = data.x;
-        this.y = data.y;
         this.buildings = [];
+        _.extend(this, data);
+
     }
     get(x,y){
         if(!this.cols[x]){
             this.cols[x] = [];
         }
         let tile = this.cols[x][y] || null;
-        if(!tile){
 
-
-        }
         return tile;
     }
     populateRandom(){
@@ -45,13 +42,6 @@ class Lot{
 
         this.populateNPCs();
 
-       /* let populationColl = [];
-        populationColl.push(new Population({
-            type:Population.Type.ZOMBIE,
-            count: Math.floor(this.app.rnd() * 10),
-            aggression: Math.floor(this.app.rnd() * 10)
-        }));
-*/
 
 
 
@@ -67,7 +57,8 @@ class Lot{
         for(let i = (zombieNpcChance); i > 0; i -= 1){
 
             this.npcs.push(
-                new NPC({
+                this.app.addNPC({
+
                     type: NPC.Type.ZOMBIE,
                     faction: null,//CIVILIAN ??,
                     lot: this
@@ -80,7 +71,7 @@ class Lot{
         for(let i = (npcChance); i > 0; i -= 1){
 
             this.npcs.push(
-                new NPC({
+                this.app.addNPC({
                     type: NPC.Type.HUMAN,
                     faction: null,//CIVILIAN ??,
                     lot: this
