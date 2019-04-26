@@ -128,8 +128,7 @@ class App extends Component {
       let tickCycle = 0;
         app.ticker.add((delta) => {
             this.npcs.forEach((npc)=>{
-                if(!npc.lot){
-                    console.log("Missing LOT");
+                if(!npc.lot || !npc.lot.observed){
                   return;
                 }
                 tickCycle += delta;

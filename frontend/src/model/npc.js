@@ -61,16 +61,40 @@ class NPC{
         if(!this.sprite){
             return;
         }
-        if(!this.velocity){
-            this.velocity = {
-                x: Math.round(this.lot.app.rnd() * 2) - 1,
-                y: Math.round(this.lot.app.rnd() * 2) - 1
-            }
+        if(
+            !this.velocity ||
+            Math.round(this.lot.app.rnd() * 20) == 1
+        ){
+          this.changeVelocity();
         }
-        this.lotPos.x += this.velocity.x * .01 * delta;
-        this.lotPos.y += this.velocity.y * .01 * delta;
+        let goalX = this.lotPos.x + this.velocity.x * .01 * delta;
+        let goalY = this.lotPos.y + this.velocity.y * .01 * delta;
+
+        if(
+            goalX < 0 ||
+            goalX > 3 ||
+            goalY < 0 ||
+            goalY > 3
+
+        ){
+
+            return this.changeVelocity();//
+        }
+        let tile = this.lot.getTile(Math.floor(goalX), Math.floor(goalY));
+        if(tile){
+            //There is a building there.
+            return this.changeVelocity();
+        }
+        this.lotPos.x = goalX;
+        this.lotPos.y = goalY;
         this.updateScreenPos();
 
+    }
+    changeVelocity(){
+        this.velocity = {
+            x: Math.round(this.lot.app.rnd() * 2) - 1,
+            y: Math.round(this.lot.app.rnd() * 2) - 1
+        }
     }
     updateScreenPos(){
         this.sprite.x = this.lotPos.x * 16;

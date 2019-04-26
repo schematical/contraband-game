@@ -170,7 +170,7 @@ class Lot{
             tile.render(this.sprite);//this.container);
         })
         this.npcs.forEach((npc)=>{
-           // npc.render(this.sprite);
+           npc.render(this.sprite);
         });
 
     }
