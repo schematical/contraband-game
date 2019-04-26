@@ -18,6 +18,7 @@ import NPCDetailComponent from './components/NPCDetailComponent';
 import LotDetailComponent from "./components/LotDetailComponent";
 import Lot from "./model/lot";
 import * as _ from "underscore";
+import NPCWonderBehavior from "./model/ai/NPCWonderBehavior";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -175,6 +176,9 @@ class App extends Component {
             })
             npc.populateDefaults();
             npc.populateRandom();
+            npc.addAIBehavior(new NPCWonderBehavior({
+                priority: 50
+            }));
             startLot.npcs.push(
                 npc
             );

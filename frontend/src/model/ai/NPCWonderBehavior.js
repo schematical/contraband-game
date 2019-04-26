@@ -17,7 +17,7 @@ class NPCWonderBehavior extends NPCBehavior{
         return false;
     }
     execute(){
-        console.log("WOndering");
+
         if(!this.npc.sprite){
             return;
         }

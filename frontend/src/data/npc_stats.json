@@ -58,6 +58,18 @@
     "namespace": "schematical:npc_stats:body_temp",
     "name": "body temp",
     "startValue": 37
+  },
+  {
+    "namespace": "schematical:npc_stats:aggression",
+    "desc": "How likely an NPC is to start a fight or flee",
+    "name": "aggression",
+    "startValue": 3
+  },
+  {
+    "namespace": "schematical:npc_stats:desperation",
+    "desc": "How likely an NPC is to do something risky or commit a crime",
+    "name": "desperation",
+    "startValue": 3
   }
 
 

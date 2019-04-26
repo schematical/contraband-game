@@ -12,10 +12,11 @@ class NPCHuntBehavior extends NPCBehavior{
 
     }
     shouldExecute(){
+
         //Find a target
         let targets = [];
         this.npc.lot.npcs.forEach((npc)=>{
-            if(this.filter(npc)){
+            if(!this.filter(npc)){
                 return;
             }
             targets.push(npc);
@@ -36,7 +37,9 @@ class NPCHuntBehavior extends NPCBehavior{
         return true;
     }
     execute(){
+
         let nVec = this.npc.normalizedVectorTo(this.target);
+        console.log("Hunting Target: " + this.target.type + " " + this.target.id , nVec);
         this.npc.velocity = {
             x: nVec.x,
             y: nVec.y

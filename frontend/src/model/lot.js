@@ -104,12 +104,12 @@ class Lot{
                 faction: null,//CIVILIAN ??,
                 lot: this
             });
-           /* npc.addAIBehavior(new NPCHuntBehavior({
+            npc.addAIBehavior(new NPCHuntBehavior({
                 priority: 20,
                 filter:function(potentialTarget){
-                    return (potentialTarget.type == NPC.Type.HUMAN);
+                    return (potentialTarget.type === NPC.Type.HUMAN);
                 }
-            }));*/
+            }));
             npc.addAIBehavior(new NPCWonderBehavior({
                 priority: 50
             }));
@@ -120,12 +120,17 @@ class Lot{
 
         for(let i = (npcChance); i > 0; i -= 1){
 
+
+             let npc = this.app.addNPC({
+                type: NPC.Type.HUMAN,
+                faction: null,//CIVILIAN ??,
+                lot: this
+            })
+            npc.addAIBehavior(new NPCWonderBehavior({
+                priority: 50
+            }));
             this.addNPC(
-                this.app.addNPC({
-                    type: NPC.Type.HUMAN,
-                    faction: null,//CIVILIAN ??,
-                    lot: this
-                })
+                npc
             )
         }
 

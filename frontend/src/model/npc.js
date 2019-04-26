@@ -91,14 +91,14 @@ class NPC{
     }
     attemptLotTransition(x, y) {
         let debutId = (this.name || (this.type + " " + this.id));
-        console.log("ATTEMPTING TRANSITION: " + debutId, x, y);
+
         //Check for walls?
         let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
         if (this.faction) {
             return false;//TODO: Stop them from moving
         }
         if (_.isNull(destLot)) {
-            console.log("CHUCK NOT LOADED, SLEEPING: ", debutId);
+
             this.app.sleepNPC(this);
             return true;
         }else{
@@ -130,7 +130,7 @@ class NPC{
 
             destLot.addNPC(this);
             this.sprite.setParent(destLot.sprite);
-            console.log("CHUCKLOADED, Moving: ", debutId, this.goalLotPos);
+            this.sprite.setParent(destLot.sprite);
             return true;
         }
 
@@ -157,7 +157,7 @@ class NPC{
         ){
 
             let behavior = this.behaviors[index];
-            console.log("TESTING: ", index, behavior, "this.behaviors.length: " , this.behaviors.length )
+
             if(behavior.shouldExecute()){
                 this.activeBehavior = behavior;
             }
@@ -252,8 +252,8 @@ class NPC{
         let myPos = this.getGlobalPos();
         let theirPos = npc.getGlobalPos();
         return {
-            x: myPos.x - theirPos.x,
-            y: myPos.y - theirPos.y
+            x: theirPos.x - myPos.x ,
+            y: theirPos.y -  myPos.y
         }
     }
     normalizedVectorTo(npc){
