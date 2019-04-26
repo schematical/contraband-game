@@ -65,14 +65,26 @@ class App extends Component {
           <HeaderComponent />
           <div className="row">
               <div className="span3 bs-docs-sidebar">
+                  { this.state.selected_building &&
+                      <ul className="nav nav-list bs-docs-sidenav">
+                          <li><a href="#download-bootstrap">{this.state.selected_building.type}</a></li>
+                            {this.state.selected_building.npcs.map((value, index) => {
+                                      return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
+                                })
+                            }
+
+                      </ul>
+                  }
+                  { this.state.selected_tile &&
                   <ul className="nav nav-list bs-docs-sidenav">
-                      <li><a href="#download-bootstrap"><i className="icon-chevron-right"></i> Download</a></li>
-                      <li><a href="#file-structure"><i className="icon-chevron-right"></i> File structure</a></li>
-                      <li><a href="#contents"><i className="icon-chevron-right"></i> What's included</a></li>
-                      <li><a href="#html-template"><i className="icon-chevron-right"></i> HTML template</a></li>
-                      <li><a href="#examples"><i className="icon-chevron-right"></i> Examples</a></li>
-                      <li><a href="#what-next"><i className="icon-chevron-right"></i> What next?</a></li>
+                      <li><a href="#download-bootstrap">{this.state.selected_tile.x}, {this.state.selected_tile.y}</a></li>
+                      {this.state.selected_tile.npcs.map((value, index) => {
+                          return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
+                      })
+                      }
+
                   </ul>
+                  }
               </div>
               <div className="span9" >
                   <button onClick={this.start}>Start</button>
@@ -96,8 +108,8 @@ class App extends Component {
 
         });
 
-        for(let x = -3; x < 3; x++){
-            for(let y = -3; y < 3; y++){
+        for(let x = -6; x < 6; x++){
+            for(let y = -6; y < 6; y++){
                 this.map.get(x,y );
             }
         }
@@ -120,7 +132,7 @@ class App extends Component {
           backgroundColor: 0x000084,
           resolution: window.devicePixelRatio || 1
       };
-      console.log(args);
+
 
       this.pixi = new PIXI.Application(args);
       this.mainContainer.appendChild(this.pixi.view );

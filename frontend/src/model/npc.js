@@ -1,10 +1,18 @@
-import * as PIXI from "pixi.js";
-import {Helper} from '../util/Helper';
 import _ from 'underscore';
+import {Helper} from "../util/Helper";
+import * as PIXI from "pixi.js";
+class NPC{
+    static get Type(){
+        return {
+            ZOMBIE: "ZOMBIE",
+            HUMAN: "HUMAN"
+        }
+    }
 
-class Tile{
     constructor(data){
-      _.extend(this, data);
+
+        _.extend(this, data);
+
 
     }
     render(container){
@@ -12,19 +20,24 @@ class Tile{
         var canvas = document.getElementById("sketchPad")
         var ctx = canvas.getContext('2d');
 
-        let size = 16;
+        let size = 2;
         var img = new ImageData(size, size);
+        let colorStr = "#666666";
+        switch(this.type){
+            case(NPC.Type.ZOMBIE):
+                colorStr = "#008800";
+            break;
 
-        let color = Helper.hexToRgb(this.building.primaryMaterial.color);
+
+        }
+        let color = Helper.hexToRgb(colorStr);
         let i = 0;
         for(let y = 0; y < size; y++){
             for(let x = 0; x < size; x++){
 
 
                 let multiplier = 1;
-                if(this.bottom && y > size / 2) {
-                    multiplier = .5;
-                }
+
                 img.data[i * 4] = color.r * multiplier;
                 img.data[i * 4 + 1] = color.g * multiplier;
                 img.data[i * 4 + 2] = color.b * multiplier;
@@ -57,10 +70,6 @@ class Tile{
         this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
         this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
 
-            //.on('pointerup', onButtonUp)
-            //.on('pointerupoutside', onButtonUp)
-
-
     }
     onPointerDown(){
         this.lot.app.setState({selected_building: this.building});
@@ -76,4 +85,4 @@ class Tile{
     }
 
 }
-export default Tile;
+export default NPC;
