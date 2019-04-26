@@ -20,12 +20,15 @@ class NPC{
         var canvas = document.getElementById("sketchPad")
         var ctx = canvas.getContext('2d');
 
-        let size = 2;
+        let size = 4;
+        ctx.clearRect(0,0,  canvas.width, canvas.height);
         var img = new ImageData(size, size);
-        let colorStr = "#666666";
+        let colorStr = "#ff0000";//"#666666";
+        console.log("Rendering: ", this.type);
         switch(this.type){
             case(NPC.Type.ZOMBIE):
                 colorStr = "#008800";
+
             break;
 
 
@@ -56,8 +59,8 @@ class NPC{
         let texture = PIXI.Texture.fromImage(url);
         this.sprite = new PIXI.Sprite((texture));// this.lot.app.textures.bunny ));
         //sprite.anchor.set(0.5);
-        this.sprite.x = (this.x) * 16;
-        this.sprite.y = (this.y) * 16;
+        this.sprite.x = (this.lotPos.x) * 16;
+        this.sprite.y = (this.lotPos.y) * 16;
         container.addChild(this.sprite);
         // Opt-in to interactivity
         this.sprite.interactive = true;
@@ -69,14 +72,13 @@ class NPC{
         this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
         this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
         this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
-
+        console.log("NPC Rendered: ", this.sprite.x, this.sprite.y);
     }
     onPointerDown(){
-        this.lot.app.setState({selected_building: this.building});
+        this.lot.app.setState({selected_npc: this});
     }
     onPointerOver(){
-        let buildingReg = this.lot.app.registry.buildings.get(this.building.type );
-        let debugText = buildingReg.name + "(" + this.lot.x + "." + this.x + ", " + this.lot.y + '.' + this.y + ")";
+        let debugText = this.type + "(" + this.lotPos.x + ", " + this.lotPos.y + ")";
         this.lot.app.setState({text: debugText});
 
     }

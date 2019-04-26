@@ -62,23 +62,40 @@ class Lot{
             return;
         }
 
-        let npcChance = 22;//Math.floor((this.app.rnd() * 25) - 20);
+        let zombieNpcChance = Math.floor((this.app.rnd() * 10) - 5);
 
-        for(let i = (npcChance - 20); i > 0; i -= 1){
-            console.log("Adding NPC to lot");
+        for(let i = (zombieNpcChance); i > 0; i -= 1){
+
+            this.npcs.push(
+                new NPC({
+                    type: NPC.Type.ZOMBIE,
+                    faction: null,//CIVILIAN ??,
+                    lot: this
+                })
+            )
+        }
+
+        let npcChance = Math.floor((this.app.rnd() * 25) - 20);
+
+        for(let i = (npcChance); i > 0; i -= 1){
+
             this.npcs.push(
                 new NPC({
                     type: NPC.Type.HUMAN,
-                    faction: null//CIVILIAN ??
+                    faction: null,//CIVILIAN ??,
+                    lot: this
                 })
             )
         }
 
 
-        let npcsToTilesRatio = this.npcs.length / this.emptyTileCoords.length;
+        let npcsToTilesRatio =  this.emptyTileCoords.length / this.npcs.length ;
         let index = 0;
-        this.npcs.forEach((npc)=>{
+        _.shuffle(this.npcs).forEach((npc)=>{
             npc.lotPos = this.emptyTileCoords[Math.floor(index)];
+            if(!npc.lotPos){
+                throw new Error("Your math is off");
+            }
             index += npcsToTilesRatio;
         });
 
@@ -147,6 +164,7 @@ class Lot{
         var ctx = canvas.getContext('2d');
 
         let size = 64;
+        ctx.clearRect(0,0,  canvas.width, canvas.height);
         var img = new ImageData(size, size);
         let colorStr = "#000000";
 
@@ -161,7 +179,7 @@ class Lot{
                 img.data[i * 4] = color.r * multiplier;
                 img.data[i * 4 + 1] = color.g * multiplier;
                 img.data[i * 4 + 2] = color.b * multiplier;
-                img.data[i * 4 + 3] = 8;
+                img.data[i * 4 + 3] = 128;
 
                 //bmp.pixel[x][y] = color;
                 i++;

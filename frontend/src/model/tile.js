@@ -13,6 +13,7 @@ class Tile{
         var ctx = canvas.getContext('2d');
 
         let size = 16;
+        ctx.clearRect(0,0,  canvas.width, canvas.height);
         var img = new ImageData(size, size);
 
         let color = Helper.hexToRgb(this.building.primaryMaterial.color);

@@ -12,7 +12,7 @@ class Map{
         }
         let lot = this.cols[x][y];
         if(!lot){
-            console.log("Populating: ", x,y);
+
             //generate
             lot = new Lot({
                 app: this.app,
@@ -36,7 +36,6 @@ class Map{
         Object.keys(this.cols).forEach((x) =>{
             Object.keys(this.cols[x]).forEach((y) =>{
                 let lot = this.cols[x][y];
-                console.log("Calling Render" , lot.x, lot.y);
                 iterator(lot);
             })
         })
