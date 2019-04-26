@@ -15,6 +15,14 @@ class Lot{
             MAPPED: "MAPPED"
         }
     }
+    static get Direction(){
+        return {
+            UP: "UP",
+            DOWN: "DOWN",
+            WEST: "WEST",
+            EAST: "EAST"
+        }
+    }
     constructor(data){
 
         this.cols = [];
@@ -89,7 +97,7 @@ class Lot{
 
         for(let i = (zombieNpcChance); i > 0; i -= 1){
 
-            this.npcs.push(
+            this.addNPC(
                 this.app.addNPC({
 
                     type: NPC.Type.ZOMBIE,
@@ -103,7 +111,7 @@ class Lot{
 
         for(let i = (npcChance); i > 0; i -= 1){
 
-            this.npcs.push(
+            this.addNPC(
                 this.app.addNPC({
                     type: NPC.Type.HUMAN,
                     faction: null,//CIVILIAN ??,
@@ -115,6 +123,10 @@ class Lot{
 
         this.shuffleNPCSLotPos();
 
+    }
+    addNPC(npc){
+        this.npcs.push(npc);
+        npc.lot = this;
     }
     shuffleNPCSLotPos(){
         let npcsToTilesRatio =  this.emptyTileCoords.length / this.npcs.length ;
@@ -263,6 +275,13 @@ class Lot{
         if(this.observed) {
             this.sprite.texture = this.app.textureManager.getLotObservedSelected();
         }
+    }
+    removeNPC(npc){
+
+        this.npcs = _.reject(this.npcs, (_npc)=>{
+            return npc.id == _npc.id;
+        })
+
     }
 
 

@@ -35,6 +35,14 @@ class NavBarComponent extends Component {
                             <input className="span2" type="password" placeholder="Password" />
                             <button type="submit" className="btn">Sign in</button>
                         </form>*/}
+                        <div className="pull-right">
+                            <ul className="nav">
+                                <li className="active">
+                                    <a href="#">{ Math.floor(this.props.app.state.globalLifecycle/1000)} - Cycle: { this.props.app.state.cycleCount }</a>
+                                </li>
+                            </ul>
+
+                        </div>
                     </div>
 
                 </div>

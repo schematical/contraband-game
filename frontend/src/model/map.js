@@ -6,12 +6,17 @@ class Map{
         this.app = options.app;
         this.cols = {};
     }
-    get(x,y){
+    get(x,y, _options){
+        let options = {
+            autoGen:true
+        };
+        _.extend(options, _options)
         if(_.isUndefined(this.cols[x])){
             this.cols[x] = {};
         }
-        let lot = this.cols[x][y];
-        if(!lot){
+        let lot = this.cols[x][y] || null;
+
+        if(!lot && options.autoGen){
 
             //generate
             lot = new Lot({

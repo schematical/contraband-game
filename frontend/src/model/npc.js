@@ -80,6 +80,50 @@ class NPC{
     onPointerOut(){
         this.lot.app.setState({text: ""});
     }
+    attemptLotTransition(x, y) {
+        let debutId = (this.name || (this.type + " " + this.id));
+        console.log("ATTEMPTING TRANSITION: " + debutId, x, y);
+        //Check for walls?
+        let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
+        if (!this.faction) {
+            if (_.isNull(destLot)) {
+                console.log("CHUCK NOT LOADED, SLEEPING: ", debutId);
+                this.app.sleepNPC(this);
+                return true;
+            }else{
+                this.transitioningLots = true;
+                this.lot.removeNPC(this);
+
+                destLot.addNPC(this);
+                this.sprite.setParent(destLot.sprite);
+                let newX = this.goalLotPos.x;
+                if(x < 0){
+                    newX =  3.5;
+                }else if( x > 0){
+                    newX = .5;
+                }
+                let newY = this.goalLotPos.y;
+                if(y < 0){
+                    newY = 3.5;
+                }else if( y > 0){
+                    newY = .5;
+                }
+                this.goalLotPos = {
+                    x: newX,
+                    y: newY
+                }
+                console.log("CHUCKLOADED, Moving: ", debutId, this.goalLotPos);
+                return true;
+            }
+
+        }
+
+        //TODO Check faction stuff secodn
+        if (_.isNull(destLot)) {
+            //TODO: Generate in real time and re check
+
+        }
+    }
     wonder(delta){
         if(!this.sprite){
             return;
@@ -88,28 +132,45 @@ class NPC{
             !this.velocity ||
             Math.round(this.lot.app.rnd() * 20) == 1
         ){
-          this.changeVelocity();
+            this.changeVelocity();
         }
-        let goalX = this.lotPos.x + this.velocity.x * .01 * delta;
-        let goalY = this.lotPos.y + this.velocity.y * .01 * delta;
+        this.goalLotPos = {};
+        this.goalLotPos.x = this.lotPos.x + this.velocity.x * .01 * delta;
+        this.goalLotPos.y = this.lotPos.y + this.velocity.y * .01 * delta;
 
-        if(
-            goalX < 0 ||
-            goalX > 3 ||
-            goalY < 0 ||
-            goalY > 3
-
-        ){
-
-            return this.changeVelocity();//
+        if(this.goalLotPos.x < 0){
+            //Test if can wonder west
+            if(!this.attemptLotTransition( -1, 0)){
+                return this.changeVelocity();
+            }
         }
-        let tile = this.lot.getTile(Math.floor(goalX), Math.floor(goalY));
+        if(this.goalLotPos.x > 4){
+            //Test if can wonder west
+            if(!this.attemptLotTransition( 1, 0)){
+                return this.changeVelocity();
+            }
+        }
+        if(this.goalLotPos.y < 0){
+            //Test if can wonder west
+            if(!this.attemptLotTransition( 0, -1)){
+                return this.changeVelocity();
+            }
+        }
+        if(this.goalLotPos.y > 4){
+            //Test if can wonder west
+            if(!this.attemptLotTransition( 0, 1)){
+                return this.changeVelocity();
+            }
+        }
+
+        let tile = this.lot.getTile(Math.floor(this.goalLotPos.x), Math.floor(this.goalLotPos.y));
         if(tile){
             //There is a building there.
             return this.changeVelocity();
+
         }
-        this.lotPos.x = goalX;
-        this.lotPos.y = goalY;
+        this.lotPos = this.goalLotPos;
+        this.goalLotPos = null;
         this.updateScreenPos();
 
     }
@@ -125,6 +186,12 @@ class NPC{
     }
     guiDeselect(){
 
+    }
+    sleep(){
+        this.sprite.visible = false;
+    }
+    destroy(){
+        this.sprite.destroy();
     }
 
 }

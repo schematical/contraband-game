@@ -17,5 +17,14 @@
     "perks": [
 
     ]
+  },
+  {
+    "namespace": "schematical:occupation:emt",
+    "name": "Emergency Medical Technician",
+    "notes": "TODO: Give bonus",
+    "perks": [
+
+    ]
   }
+
 ]
