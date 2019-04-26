@@ -38,6 +38,26 @@
     "namespace": "schematical:npc_stats:reputation",
     "name": "reputation",
     "startValue": 50
+  },
+  {
+    "namespace": "schematical:npc_stats:run_speed",
+    "name": "run_speed",
+    "startValue": 4
+  },
+  {
+    "namespace": "schematical:npc_stats:visibility_range",
+    "name": "visibility range",
+    "startValue": 1
+  },
+  {
+    "namespace": "schematical:npc_stats:muscle",
+    "name": "muscle",
+    "startValue": 2
+  },
+  {
+    "namespace": "schematical:npc_stats:body_temp",
+    "name": "body temp",
+    "startValue": 37
   }
 
 

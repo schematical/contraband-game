@@ -6,6 +6,8 @@ import Population from "./population";
 import NPC from "./npc";
 import {Helper} from "../util/Helper";
 import _ from "underscore";
+import NPCHuntBehavior from "./ai/NPCHuntBehavior";
+import NPCWonderBehavior from "./ai/NPCWonderBehavior";
 class Lot{
     static get States(){
         return {
@@ -96,15 +98,22 @@ class Lot{
         let zombieNpcChance = Math.floor((this.app.rnd() * 10) - 5);
 
         for(let i = (zombieNpcChance); i > 0; i -= 1){
+            let npc = this.app.addNPC({
 
-            this.addNPC(
-                this.app.addNPC({
-
-                    type: NPC.Type.ZOMBIE,
-                    faction: null,//CIVILIAN ??,
-                    lot: this
-                })
-            )
+                type: NPC.Type.ZOMBIE,
+                faction: null,//CIVILIAN ??,
+                lot: this
+            });
+           /* npc.addAIBehavior(new NPCHuntBehavior({
+                priority: 20,
+                filter:function(potentialTarget){
+                    return (potentialTarget.type == NPC.Type.HUMAN);
+                }
+            }));*/
+            npc.addAIBehavior(new NPCWonderBehavior({
+                priority: 50
+            }));
+            this.addNPC(npc);
         }
 
         let npcChance = Math.floor((this.app.rnd() * 25) - 20);
@@ -267,12 +276,12 @@ class Lot{
 
     }
     guiDeselect(){
-        if(this.observed) {
+        if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
             this.sprite.texture = this.app.textureManager.getLotObservedDefault();
         }
     }
     guiSelect(){
-        if(this.observed) {
+        if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
             this.sprite.texture = this.app.textureManager.getLotObservedSelected();
         }
     }

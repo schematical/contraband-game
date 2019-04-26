@@ -1,0 +1,11 @@
+[
+  {
+    "namespace": "schematical:weapon:fists",
+    "name": "fists",
+    "range": 1,
+    "damage": 1,
+    "multiplier": [
+      "schematical:npc_stats:strength"
+    ]
+  }
+]

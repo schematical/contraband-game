@@ -13,9 +13,18 @@ class NPC{
     constructor(data){
         this.traits = [];
         this.stats = {};
+        this.behaviors = [];
         _.extend(this, data);
 
 
+
+    }
+    addAIBehavior(behavior){
+        behavior.npc = this;
+        this.behaviors.push(behavior);
+        this.behaviors = _.sortBy(this.behaviors, (behavior)=>{
+            return behavior.priority;
+        })
     }
     populateDefaults(){
         //Iterate through all stats
@@ -85,65 +94,91 @@ class NPC{
         console.log("ATTEMPTING TRANSITION: " + debutId, x, y);
         //Check for walls?
         let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
-        if (!this.faction) {
-            if (_.isNull(destLot)) {
-                console.log("CHUCK NOT LOADED, SLEEPING: ", debutId);
-                this.app.sleepNPC(this);
-                return true;
+        if (this.faction) {
+            return false;//TODO: Stop them from moving
+        }
+        if (_.isNull(destLot)) {
+            console.log("CHUCK NOT LOADED, SLEEPING: ", debutId);
+            this.app.sleepNPC(this);
+            return true;
+        }else{
+            this.transitioningLots = true;
+
+            let newX = this.goalLotPos.x;
+            if(x < 0){
+                newX =  3.9;
+            }else if( x > 0){
+                newX = .1;
+            }
+            let newY = this.goalLotPos.y;
+            if(y < 0){
+                newY = 3.9;
+            }else if( y > 0){
+                newY = .1;
+            }
+            this.goalLotPos = {
+                x: newX,
+                y: newY
+            }
+            let tile = destLot.getTile(Math.floor(this.goalLotPos.x), Math.floor(this.goalLotPos.y));
+            if(tile){
+                //There is a building there.
+                return false;
+
+            }
+            this.lot.removeNPC(this);
+
+            destLot.addNPC(this);
+            this.sprite.setParent(destLot.sprite);
+            console.log("CHUCKLOADED, Moving: ", debutId, this.goalLotPos);
+            return true;
+        }
+
+    }
+    tick(){
+        this.tickAI();
+        this.tickPhysics();
+    }
+    tickAI(){
+
+        if(this.activeBehavior){
+            if(this.activeBehavior.continueExecuting()){
+                this.activeBehavior.execute();
+                return;
             }else{
-                this.transitioningLots = true;
-
-                let newX = this.goalLotPos.x;
-                if(x < 0){
-                    newX =  3.9;
-                }else if( x > 0){
-                    newX = .1;
-                }
-                let newY = this.goalLotPos.y;
-                if(y < 0){
-                    newY = 3.9;
-                }else if( y > 0){
-                    newY = .1;
-                }
-                this.goalLotPos = {
-                    x: newX,
-                    y: newY
-                }
-                let tile = destLot.getTile(Math.floor(this.goalLotPos.x), Math.floor(this.goalLotPos.y));
-                if(tile){
-                    //There is a building there.
-                    return false;
-
-                }
-                this.lot.removeNPC(this);
-
-                destLot.addNPC(this);
-                this.sprite.setParent(destLot.sprite);
-                console.log("CHUCKLOADED, Moving: ", debutId, this.goalLotPos);
-                return true;
+                this.activeBehavior = null;
             }
 
         }
+        let index = 0;
+        while(
+            index < this.behaviors.length &&
+            !this.activeBehavior
+        ){
 
-        //TODO Check faction stuff secodn
-        if (_.isNull(destLot)) {
-            //TODO: Generate in real time and re check
-
+            let behavior = this.behaviors[index];
+            console.log("TESTING: ", index, behavior, "this.behaviors.length: " , this.behaviors.length )
+            if(behavior.shouldExecute()){
+                this.activeBehavior = behavior;
+            }
+            index++;
         }
-    }
-    wonder(delta){
-        if(!this.sprite){
+        if(!this.activeBehavior){
             return;
         }
-        if(
-            !this.velocity ||
-            Math.round(this.lot.app.rnd() * 20) == 1
-        ){
-            this.changeVelocity();
+        this.activeBehavior.execute();
+
+    }
+    tickPhysics(){
+        if(!this.lotPos){
+            return;
+        }
+        if(!this.velocity){
+            this.velocity = {x:0, y: 0};
         }
         this.goalLotPos = {};
-        this.goalLotPos.x = this.lotPos.x + this.velocity.x * .01 * delta;
-        this.goalLotPos.y = this.lotPos.y + this.velocity.y * .01 * delta;
+        this.goalLotPos.x = this.lotPos.x + this.velocity.x * .01;
+        this.goalLotPos.y = this.lotPos.y + this.velocity.y * .01;
 
         if(this.goalLotPos.x < 0){
             //Test if can wonder west
@@ -199,6 +234,48 @@ class NPC{
     }
     destroy(){
         this.sprite.destroy();
+    }
+    getGlobalPos(){
+        return {
+            x: this.lot.x + ( this.lotPos.x / 4),
+            y: this.lot.y + (this.lotPos.y / 4)
+        }
+    }
+    distTo(npc){
+        let myPos = this.getGlobalPos();
+        let theirPos = npc.getGlobalPos();
+        let xDist = myPos.x - theirPos.x;;
+        let yDist =  myPos.y - theirPos.y;
+        return Math.sqrt(xDist * xDist + yDist * yDist);
+    }
+    vecTo(npc){
+        let myPos = this.getGlobalPos();
+        let theirPos = npc.getGlobalPos();
+        return {
+            x: myPos.x - theirPos.x,
+            y: myPos.y - theirPos.y
+        }
+    }
+    normalizedVectorTo(npc){
+        let vec = this.vecTo(npc);
+        let nVec = {};
+        if(vec.x > 0){
+            nVec.x = 1;
+        }else if(vec.x < 0){
+            nVec.x = -1;
+        }else{
+            nVec.x = 0;
+        }
+
+
+        if(vec.y > 0){
+            nVec.y = 1;
+        }else if(vec.y < 0){
+            nVec.y = -1;
+        }else{
+            nVec.y = 0;
+        }
+        return nVec;
     }
 
 }

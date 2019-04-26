@@ -143,7 +143,7 @@ class App extends Component {
                     if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
                         return;
                     }
-                    npc.wonder(1);
+                    npc.tick();
 
                 })
             }
