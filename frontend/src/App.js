@@ -84,9 +84,26 @@ class App extends Component {
                       <li><a href="#download-bootstrap">LOT {this.state.selected_lot.x}, {this.state.selected_lot.y}</a></li>
                       {this.state.selected_lot.npcs.map((value, index) => {
                           return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
-                      })
-                      }
-
+                      })}
+                      <li className="divider"></li>
+                      {this.state.selected_lot.buildings.map((building, index) => {
+                          return <span>
+                          <li>
+                              <a href="#file-structure">
+                                  <i className="icon-chevron-right"></i>
+                                  {this.registry.buildings.get(building.type).name} {index}
+                              </a>
+                          </li>
+                          {building.npcs.map((npc, index2) => {
+                              return <li>
+                                  <a href="#file-structure">
+                                      <i className="icon-chevron-right"></i>
+                                      {npc.type} {index2}
+                                  </a>
+                              </li>;
+                          })}
+                          </span>
+                      })}
                   </ul>
                   }
               </div>

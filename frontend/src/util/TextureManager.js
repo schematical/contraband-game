@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import _ from "underscore";
 const LOT_SIZE = 64;
 const NPC_SIZE = 4;
-
+const TILE_SIZE = 16;
 class TextureManager{
     constructor(){
         this.cache = {};
@@ -39,7 +39,22 @@ class TextureManager{
         }
         return this.cache["NPCCivilianObservedDefault"];
     }
-    generateSquare(width, height, color, alpha){
+    getBuildingTileDefault(tile){
+        let color = Helper.hexToRgb(tile.building.primaryMaterial.color);
+
+        return this.generateSquare(TILE_SIZE, TILE_SIZE, color, 255, (x,y, color)=>{
+            let multiplier = 1;
+
+            if(tile.bottom && y > TILE_SIZE / 2) {
+                multiplier = .5;
+                color.r *= multiplier;
+                color.g *= multiplier;
+                color.b *= multiplier;
+            }
+            return color;
+        });
+    }
+    generateSquare(width, height, color, alpha, pixelModifier){
         if(_.isUndefined(alpha)){
             alpha = 255;
         }
@@ -50,15 +65,20 @@ class TextureManager{
 
 
         this.ctx.clearRect(0,0,  this.canvas.width, this.canvas.height);
+        this.canvas.width = width;
+        this.canvas.height = height;
         var img = new ImageData(height, width);
 
         if(_.isString(color)) {
             color = Helper.hexToRgb(color);
         }
         let i = 0;
+        let origColor = _.clone(color);
         for(let y = 0; y < width; y++){
             for(let x = 0; x < height; x++){
-
+                if(pixelModifier){
+                    color = pixelModifier(x,y,origColor)
+                }
                 img.data[i * 4] = color.r;
                 img.data[i * 4 + 1] = color.g;
                 img.data[i * 4 + 2] = color.b;

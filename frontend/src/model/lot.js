@@ -156,6 +156,8 @@ class Lot{
         //sprite.anchor.set(0.5);
         this.sprite.x = this.x * (size + 8);
         this.sprite.y = this.y * (size + 8);
+        this.sprite.width = size;
+        this.sprite.height = size;
         container.addChild(this.sprite);
         // Opt-in to interactivity
         this.sprite.interactive = true;
@@ -168,7 +170,7 @@ class Lot{
             tile.render(this.sprite);//this.container);
         })
         this.npcs.forEach((npc)=>{
-            npc.render(this.sprite);
+           // npc.render(this.sprite);
         });
 
     }
@@ -187,7 +189,7 @@ class Lot{
         this.app.selectTile(this);
     }
     onPointerOver(){
-        let debugText = "LOT(" + this.x + ", " + this.y + ")";
+        let debugText = "LOT(" + this.x + ", " + this.y + ") - (" + this.sprite.width + ", " + this.sprite.height + ")";
         this.app.setState({text: debugText});
         let texture = this.app.textureManager.getLotObservedHovered();
         this.sprite.texture = texture;
