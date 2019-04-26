@@ -1,35 +1,41 @@
 [
   {
-    "namespace": "schematical:population_stats:health",
+    "namespace": "schematical:npc_stats:health",
     "name": "health",
     "startValue": 100
 
   },
   {
-    "namespace": "schematical:population_stats:moral",
-    "name": "moral",
+    "namespace": "schematical:npc_stats:stress",
+    "name": "stress",
     "startValue": 50
 
   },
   {
-    "namespace": "schematical:population_stats:germ_level",
+    "namespace": "schematical:npc_stats:moral",
+    "name": "moral",
+    "startValue": 90
+
+  },
+  {
+    "namespace": "schematical:npc_stats:germ_level",
     "name": "germ_level",
     "startValue": 1
 
   },
   {
-    "namespace": "schematical:population_stats:food_consumption_rate",
+    "namespace": "schematical:npc_stats:food_consumption_rate",
     "name": "food consumption rate",
     "startValue": 3
 
   },
   {
-    "namespace": "schematical:population_stats:water_consumption_rate",
+    "namespace": "schematical:npc_stats:water_consumption_rate",
     "name": "food consumption rate",
     "startValue": 8
   },
   {
-    "namespace": "schematical:population_stats:reputation",
+    "namespace": "schematical:npc_stats:reputation",
     "name": "reputation",
     "startValue": 50
   }

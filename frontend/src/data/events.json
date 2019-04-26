@@ -2,5 +2,14 @@
   {
     "namespace": "schematical:events:civilian_encounter",
     "name": "Civilian Encounter"
+  },
+  {
+    "namespace": "schematical:events:faction_member_awal",
+    "name": "Group Member AWAL",
+    "cause": {
+      "schematical:npc_stats:moral": {
+        "$LT": 10
+      }
+    }
   }
 ]

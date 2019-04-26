@@ -92,7 +92,13 @@ class App extends Component {
                   }
               </div>
               <div className="span7" >
-                  <button onClick={this.start}>Start</button>
+                  {!this.state.started &&
+                  <div className="jumbotron">
+                      <h1>Necropolis</h1>
+                      <p className="lead">It would appear that the end of days is upon us. You and 3 of your friends find yourself in the middle of a Zombie apocalypse. They look to you to lead them forward through these perilous times.
+                      </p>
+                      <a className="btn btn-large btn-success" href="#" onClick={this.start}>Begin your journey</a>
+                  </div> }
                   {this.state.text }
               </div>
           </div>
@@ -102,6 +108,7 @@ class App extends Component {
     );
   }
   start() {
+        this.setState({started:true});
         this.setupCanvas();
 
         this.map = new Map({
@@ -123,11 +130,7 @@ class App extends Component {
             })
         });
 
-        for(let x = -6; x < 6; x++){
-            for(let y = -6; y < 6; y++){
-                this.map.get(x,y );
-            }
-        }
+
         this.populateStartTeam();
         this.refreshFactionLotStates();
       this.map.render( this.pixicontainer );
@@ -192,7 +195,9 @@ class App extends Component {
 
       this.pixi = new PIXI.Application(args);
       this.mainContainer.appendChild(this.pixi.view );
-
+/*      this.pixi.view.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+      });*/
       this.pixicontainer =  new Viewport({
           screenWidth: window.innerWidth,
           screenHeight: window.innerHeight,

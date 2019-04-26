@@ -27,10 +27,17 @@ class NPCDetailComponent extends Component {
               return <li>
                   <a href="#file-structure">
                     <i className="icon-chevron-right"></i>
+
                     {this.app.registry.npc_stats.get(statNamespace).name} {this.npc.stats[statNamespace]}
                   </a>
                 </li>
             })}
+            <li className="nav-header">Actions</li>
+            <li>
+              <a href="#file-structure">
+                Explore
+              </a>
+            </li>
           </ul>
         </div>
     );

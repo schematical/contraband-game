@@ -13,6 +13,18 @@
     ]
   },
   {
+    "namespace": "schematical:buildings:busstop",
+    "name": "bus stop",
+
+
+    "primary_materials": [
+      "schematical:material:glass"
+    ],
+    "secondary_materials": [
+      "schematical:material:none"
+    ]
+  },
+  {
     "namespace": "schematical:buildings:warehouse",
     "name": "warehouse",
     "size": {
@@ -66,6 +78,20 @@
       "schematical:material:none",
       "schematical:material:glass",
       "schematical:material:steel"
+    ]
+  },
+  {
+    "namespace": "schematical:buildings:newspaperstand",
+    "name": "newspaper stand",
+
+
+    "primary_materials": [
+      "schematical:material:wood",
+      "schematical:material:canvas"
+    ],
+    "secondary_materials": [
+      "schematical:material:none",
+      "schematical:material:glass"
     ]
   }
 ]

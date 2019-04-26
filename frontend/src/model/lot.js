@@ -227,7 +227,11 @@ class Lot{
             })
         })
     }
-    onPointerDown(){
+    onPointerDown(e){
+        if(e.which === 3){
+
+        }
+        console.log("Right Click", e.data.originalEvent.which);
         this.app.selectTile(this);
     }
     onPointerOver(){

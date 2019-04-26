@@ -32,11 +32,13 @@
   {
     "namespace": "schematical:material:steel",
     "name": "steel",
-    "hitpoints": 50
+    "hitpoints": 50,
+    "color": "#444488"
   },
   {
     "namespace": "schematical:material:canvas",
     "name": "canvas",
-    "hitpoints": 25
+    "hitpoints": 25,
+    "color": "#004400"
   }
 ]

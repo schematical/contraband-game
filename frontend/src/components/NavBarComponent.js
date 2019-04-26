@@ -13,7 +13,7 @@ class NavBarComponent extends Component {
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                     </button>
-                    <a className="brand" href="#">Project name</a>
+                    <a className="brand" href="#">Necropolis by Schematical Games</a>
                     <div className="nav-collapse collapse">
                         <ul className="nav">
                             <li className="active"><a href="#">Home</a></li>

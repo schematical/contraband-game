@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NPCListComponent from "./NPCListComponent";
 
 
 class LotDetailComponent extends Component {
@@ -11,11 +12,12 @@ class LotDetailComponent extends Component {
     return (
         <ul className="nav nav-list bs-docs-sidenav">
             <li><a href="#download-bootstrap">LOT {this.lot.x}, {this.lot.y}</a></li>
-            {this.lot.npcs.map((npc, index) => {
+            <NPCListComponent npcs={this.lot.npcs} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }}/>
+            {/*{this.lot.npcs.map((npc, index) => {
                 return <li><a href="#file-structure" onClick={(event)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }}>
                     <i className="icon-chevron-right"></i> {npc.name || npc.type} {index}</a>
                 </li>
-            })}
+            })}*/}
             <li className="divider"></li>
             {this.lot.buildings.map((building, index) => {
                 return <div>
@@ -25,14 +27,15 @@ class LotDetailComponent extends Component {
                             {this.app.registry.buildings.get(building.type).name} {index}
                         </a>
                     </li>
-                    {building.npcs.map((npc, index2) => {
+                    <NPCListComponent npcs={building.npcs} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />
+                    {/*{building.npcs.map((npc, index2) => {
                         return <li>
                             <a href="#file-structure" onClick={(event)=>{ event.preventDefault(); return  this.app.guiSelectNPC(npc) }}>
                                 <i className="icon-chevron-right"></i>
                                 {npc.type} {index2}
                             </a>
                         </li>;
-                    })}
+                    })}*/}
                 </div>
             })}
         </ul>
