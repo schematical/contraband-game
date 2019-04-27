@@ -29,7 +29,7 @@ class NPCWonderBehavior extends NPCBehavior{
         }
         if(
             !this.npc.velocity ||
-            Math.round(this.npc.app.rnd() * 20) == 1
+            Math.round(this.npc.app.rnd() * 4) == 1
         ){
             this.npc.changeVelocity();
         }

@@ -32,6 +32,7 @@ class NPCListComponent extends Component {
   renderTable(){
     return (
         <table className="table table-condensed">
+          <tbody>
           {this.props.npcs.map((npc, index2) => {
             return  <tr className="success">
                   <td>
@@ -47,7 +48,7 @@ class NPCListComponent extends Component {
                 </tr>
 
           })}
-
+          </tbody>
         </table>
     )
   }

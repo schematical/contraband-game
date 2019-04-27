@@ -45,6 +45,12 @@ class TextureManager{
         }
         return this.cache["AllieObservedDefault"];
     }
+    getNPCRecentlyDeceasedObservedDefault(){
+        if(!this.cache["NPCRecentlyDeceasedObservedDefault"]){
+            return this.cache["NPCRecentlyDeceasedObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#333366", 255);
+        }
+        return this.cache["NPCRecentlyDeceasedObservedDefault"];
+    }
     getBuildingTileDefault(tile){
         let color = Helper.hexToRgb(tile.building.primaryMaterial.color);
 
@@ -100,6 +106,29 @@ class TextureManager{
 
         let texture = PIXI.Texture.fromImage(url);
         return texture;
+    }
+    getTextStyle(){
+        if(!this.cache["TextStyle"]) {
+            this.cache["TextStyle"] = new PIXI.TextStyle({
+                fontFamily: 'DOS',
+                fontSize: 12,
+                fontWeight: 'bold',
+                fill: '#ffffff',
+                //stroke: '#4a1850',
+                //strokeThickness: 5,
+
+              /*  dropShadow: true,
+                dropShadowColor: '#000000',
+                dropShadowBlur: 4,
+                dropShadowAngle: Math.PI / 6,
+                dropShadowDistance: 6,*/
+
+
+                //wordWrap: true,
+                wordWrapWidth: 440,
+            });
+        }
+        return this.cache["TextStyle"];
     }
 }
 export default TextureManager

@@ -3,22 +3,33 @@ import {Helper} from "../util/Helper";
 import * as PIXI from "pixi.js";
 import  names from '../data/names';
 import Lot from "./lot";
+import events from 'events';
+
+// Create an eventEmitter object
 class NPC{
     static get Type(){
         return {
             ZOMBIE: "ZOMBIE",
-            HUMAN: "HUMAN"
+            HUMAN: "HUMAN",
+            RECENTLY_DECEASED: "RECENTLY_DECEASED"
         }
     }
 
     constructor(data){
         this.traits = [];
-        this.stats = {};
+        this._stats = {};
         this.behaviors = [];
         this.awake = true;
         this.alive = true;
         this.tasks = [];
+        this.interactions = [];
+
+
+
         _.extend(this, data);
+        this.eventEmitter = new events.EventEmitter();
+
+        this.populateStats();
 
 
     }
@@ -29,8 +40,12 @@ class NPC{
             return task.priority || 100;
         })
     }
+
     getCurrentTask(){
         return this.tasks[0] || null;
+    }
+    addInteraction(interaction){
+        this.interactions.push(interaction);
     }
     addAIBehavior(behavior){
         behavior.npc = this;
@@ -39,12 +54,35 @@ class NPC{
             return behavior.priority;
         })
     }
-    populateDefaults(){
+    populateStats( _options){
+        let options = {
+            type:"basic"
+        };
+        _.extend(options, _options)
         //Iterate through all stats
         let stats = this.app.registry.npc_stats.list();
-
+        this.stats = {};
         Object.keys(stats).forEach((namespace)=>{
-            this.stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue)
+            if(!_.isUndefined(this._stats[namespace])){
+                return;
+            }
+            if(
+                !(
+                    options.type == "*" ||
+                    stats[namespace].type == options.type
+                )
+            ){
+                return;
+            }
+            this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
+
+            let _this = this;
+            Object.defineProperty( this.stats, stats[namespace].shortNamespace, {
+                get: function() {
+                    console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
+                    return _this._stats[namespace];
+                }
+            });
         })
     }
     populateRandom(){
@@ -54,41 +92,61 @@ class NPC{
         this.occupation  = this.app.registry.occupations.rnd();
 
     }
-    render(container){
+    render(container, _options){
+        let options = {
+            refresh: false
+        };
+        _.extend(options, _options);
 
 
         let texture = null;
 
         switch(this.type){
+            case(NPC.Type.RECENTLY_DECEASED):
+                texture = this.lot.app.textureManager.getNPCRecentlyDeceasedObservedDefault();
+            break;
             case(NPC.Type.ZOMBIE):
                 texture = this.lot.app.textureManager.getNPCZombieObservedDefault();
 
             break;
             case(NPC.Type.HUMAN):
                 if(this.faction) {//TODO: Check if its the players faction
+
                     texture = this.lot.app.textureManager.getNPCAllieObservedDefault();
+
                 }else{
                     texture = this.lot.app.textureManager.getNPCCivilianObservedDefault();
                 }
+            break;
+            default:
+                throw new Error("Invalid `npc.type`: " + this.type);
 
 
         }
-
-
-        this.sprite = new PIXI.Sprite(texture);
-        //sprite.anchor.set(0.5);
-        this.updateScreenPos();
-        container.addChild(this.sprite);
-        // Opt-in to interactivity
-        this.sprite.interactive = true;
+        if( options.refresh){
+            //TODO: Delete the sprite
+            this.sprite = null;
+        }
+        if(
+            !this.sprite
+        ) {
+            this.sprite = new PIXI.Sprite(texture);
+            //sprite.anchor.set(0.5);
+            this.updateScreenPos();
+            container.addChild(this.sprite);
+            // Opt-in to interactivity
+            this.sprite.interactive = true;
 
 // Shows hand cursor
-        this.sprite.buttonMode = true;
+            this.sprite.buttonMode = true;
 
 // Pointers normalize touch and mouse
-        this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
-        this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
-        this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
+            this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
+            this.sprite.on('pointerover', _.bind(this.onPointerOver, this));
+            this.sprite.on('pointerout', _.bind(this.onPointerOut, this))
+        }else{
+            this.sprite.texture = texture;
+        }
 
     }
     onPointerDown(){
@@ -107,7 +165,7 @@ class NPC{
 
         //Check for walls?
         let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
-        if (this.faction) {
+        if (this.faction && this.type == NPC.Type.HUMAN) {//<--- Zombies dont follow the rules
             if(!destLot.getFactionLotState(this.faction, Lot.States.ALLOWED)){
                 return false;
             }
@@ -146,23 +204,71 @@ class NPC{
 
             destLot.addNPC(this);
             this.sprite.setParent(destLot.sprite);
-            this.sprite.setParent(destLot.sprite);
+            if(this.faction) {
+                this.app.refreshFactionLotStates();
+                destLot.setFactionLotState(this.faction, Lot.States.EXPLORED, true);
+            }
+            this.app.map.render( this.app.pixicontainer );
             return true;
         }
 
     }
-    tick(){
+    /*tick(){
         this.tickAI();
         this.tickPhysics();
         this.tickBiology();
-    }
-    tickBiology(){
+    }*/
+    tickBiology(deltaMS){
+
         //Cause hunger
         //check damage
+        if(!this.alive){
+            return;
+        }
+        this.interactions.forEach((interaction)=>{
+            switch(interaction.type){
+                case("attack")://TODO: Enum
+                    this._stats["schematical:npc_stats:health"] -= interaction.damage;//TODO: Apply defence and armor and stuff
+                    console.log("Taking Damage: ", this._stats["schematical:npc_stats:health"], interaction.damage, this.stats.health);
+                    this.setCaption(this.app.dialogManager.getEventChat("attack_receive").text);
+
+                    break;
+                default:
+                    throw new Error("Invalid `interaction.type`: " + interaction);
+            }
+        })
+        this.interactions = [];
+
+        //Check resulting stats
+        //Check if dead:
+
+        if(this._stats["schematical:npc_stats:health"] <= 0){
+            if(this.type == NPC.Type.HUMAN ) {
+                this.type = NPC.Type.RECENTLY_DECEASED;
+                this.app.addCountDown(
+                    10000,
+                    ()=>{
+                        this._stats["schematical:npc_stats:health"] = 100;
+                        this.type = NPC.Type.ZOMBIE;
+                        this.render();
+                        this.setCaption(this.app.dialogManager.getEventChat("zombie_moan").text);
+                    }
+                );
+
+                this.velocity = {
+                    x: 0,
+                    y: 0
+                }
+                this.render();
+            }
+        }
+
 
     }
     tickAI(){
-
+        if(this.type == NPC.Type.RECENTLY_DECEASED){
+            return;
+        }
         if(this.activeBehavior){
             if(this.activeBehavior.continueExecuting()){
                 this.activeBehavior.execute();
@@ -245,6 +351,9 @@ class NPC{
         }
     }
     updateScreenPos(){
+        if(!this.sprite){
+            return;
+        }
         this.sprite.x = this.lotPos.x * 16;
         this.sprite.y = this.lotPos.y * 16;
     }
@@ -303,6 +412,29 @@ class NPC{
     isDead(){
         return !this.isAlive;
     }
+
+    setCaption(text){
+
+
+        if(!this.captionSprite) {
+            const richText = new PIXI.Text(
+                text,
+                this.app.textureManager.getTextStyle()
+            );
+            richText.x = 0;
+            richText.y = -10;
+            this.captionSprite = richText;
+            this.sprite.addChild( this.captionSprite);
+        }else{
+            this.captionSprite.text = text;
+        }
+        this.app.addCountDown(3000, ()=>{
+            this.captionSprite.text = "";
+        })
+
+
+    }
+
 
 }
 export default NPC;

@@ -3,7 +3,8 @@ import buildings from './data/buildings.json';
 import events from './data/events.json';
 import materials from './data/materials.json';
 import occupations from './data/occupations.json';
-import populationStats from './data/npc_stats.json';
+import npcStats from './data/npc_stats.json';
+import dialog from './data/dialog.json';
 import './App.css';
 import * as PIXI from 'pixi.js';
 import NavBarComponent from "./components/NavBarComponent";
@@ -23,6 +24,7 @@ import BuildingDetailComponent from "./components/BuildingDetailComponent";
 import TaskAssignmentComponent from "./components/TaskAssignmentComponent";
 import ModalComponent from "./components/ModalComponent";
 import NPCTaskBehavior from "./model/ai/NPCTaskBehavior";
+import NPCDialogManager from "./util/NPCDialogManager";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -32,7 +34,10 @@ class App extends Component {
         this.rnd = seedrandom(Math.random());
         this.state = {
             cycleCount:0,
-            ticksSinceLastCycle: 0
+            ticksSinceLastCycle: 0,
+            ticksSinceNPCPhysics:0,
+            ticksSinceNPCAI:0,
+            npcTickIndex: 0
         }
         this.setupRegistry();
         /* this.handleChange = this.handleChange.bind(this);
@@ -42,9 +47,11 @@ class App extends Component {
         this.gui.text = "";
         this.npcs =[];
         this.textureManager = new TextureManager();
+        this.dialogManager = new NPCDialogManager(this.registry.dialog.list());
         this.factions = [];
         this._npcId = 0;
         this.gui = {};
+        this.tickCounters = [];
 
 
     }
@@ -70,14 +77,16 @@ class App extends Component {
         occupations.forEach((data)=>{
             occupationsReg.add(data.namespace, data);
         });
-        let populationStatsReg = this.registry.add('npc_stats');
-        populationStats.forEach((data)=>{
-            populationStatsReg.add(data.namespace, data);
+        let npcStatsReg = this.registry.add('npc_stats');
+        npcStats.forEach((data)=>{
+            npcStatsReg.add(data.namespace, data);
+        });
+        let dialogReg = this.registry.add('dialog');
+        dialog.forEach((data)=>{
+            dialogReg.add(data.namespace, data);
         });
     }
-    tick(){
 
-    }
     render() {
 
         return (
@@ -129,32 +138,14 @@ class App extends Component {
         })
 
 // Listen for animate update
-        let wonderTickCycle = 0;
-        this.setState({globalLifecycle : 0 })
-        app.ticker.add((delta) => {
 
-            let newState = {
-                globalLifecycle : this.state.globalLifecycle  + app.ticker.elapsedMS,
-                ticksSinceLastCycle: this.state.ticksSinceLastCycle + app.ticker.elapsedMS
-            };
-            if(newState.ticksSinceLastCycle  > 10000){
-                this.startCycle();
-                newState.ticksSinceLastCycle = 0;
-            }
-            this.setState(newState);
-
-            wonderTickCycle += app.ticker.elapsedMS;
-            if(wonderTickCycle > 20) {
-                wonderTickCycle = 0;
-                this.npcs.forEach((npc)=>{
-                    if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
-                        return;
-                    }
-                    npc.tick();
-
-                })
-            }
-        });
+        this.setState({
+            globalLifecycle : 0,
+            ticksSinceLastCycle: 0,
+            ticksSinceNPCPhysics:0,
+            ticksSinceNPCAI:0
+        })
+        app.ticker.add(this.tick.bind(this));
 
 
         this.populateStartTeam();
@@ -162,6 +153,51 @@ class App extends Component {
         this.map.render( this.pixicontainer );
 
 
+
+    }
+    tick(delta){
+
+
+        let newState = {
+            globalLifecycle : this.state.globalLifecycle  + app.ticker.elapsedMS,
+            ticksSinceLastCycle: this.state.ticksSinceLastCycle + app.ticker.elapsedMS,
+            ticksSinceNPCPhysics: this.state.ticksSinceNPCPhysics + app.ticker.elapsedMS,
+            ticksSinceNPCAI: this.state.ticksSinceNPCAI + app.ticker.elapsedMS
+        };
+        if(newState.ticksSinceLastCycle  > 10000){
+            this.startCycle();
+            newState.ticksSinceLastCycle = 0;
+        }
+        this.setState(newState);
+
+        if(newState.ticksSinceNPCPhysics > 20) {
+            this.tickCountDowns(this.state.ticksSinceNPCPhysics);
+
+            this.state.ticksSinceNPCPhysics = 0;
+
+
+
+            this.npcs.forEach((npc)=>{
+                if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
+                    return;
+                }
+                npc.tickPhysics(app.ticker.elapsedMS);
+
+            })
+        }else if(newState.ticksSinceNPCAI > 1000){
+            this.state.ticksSinceNPCAI = 0;
+            this.npcs.forEach((npc)=>{
+                if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
+                    return;
+                }
+                if(npc.name){
+                    //npc.setCaption(npc.name);
+                }
+                npc.tickAI(app.ticker.elapsedMS);
+                npc.tickBiology(app.ticker.elapsedMS);
+
+            })
+        }
 
     }
     startCycle(){
@@ -180,7 +216,9 @@ class App extends Component {
                 faction: this.playerFaction ,
                 lot: startLot
             })
-            npc.populateDefaults();
+            npc.populateStats({
+                type: "*"
+            });
             npc.populateRandom();
             npc.addAIBehavior(new NPCTaskBehavior({
                 priority: 20
@@ -191,6 +229,8 @@ class App extends Component {
             startLot.npcs.push(
                 npc
             );
+
+
 
         }
         startLot.shuffleNPCSLotPos();
@@ -268,7 +308,7 @@ class App extends Component {
             .wheel()
             .decelerate();
 
-        this.pixicontainer.zoom(-512);//-1028
+        this.pixicontainer.zoom(-700);//-1028
 
 
 
@@ -336,7 +376,33 @@ class App extends Component {
         })
         return npcs;
     }
-
+    addCountDown(duration, _function, namespace){
+        let tickCounter = {
+            duration: duration,
+            _function: _function,
+            namespace: namespace || "tc_" + Math.random() * 9999
+        };
+        this.tickCounters.push(tickCounter)
+        return tickCounter;
+    }
+    removeCountDown(namespace){
+        this.tickCounters = _.reject(this.tickCounters, (tickCounter)=>{
+            return namespace == tickCounter.namespace;
+        })
+    }
+    tickCountDowns(deltaMS){
+        let firingTickCounters = [];
+        this.tickCounters.forEach((tickCounter)=>{
+            tickCounter.duration -= deltaMS;
+            if(tickCounter.duration <= 0){
+                firingTickCounters.push(tickCounter);
+            }
+        })
+        firingTickCounters.forEach((tickCounter)=>{
+            tickCounter._function();
+            this.removeCountDown(tickCounter.namespace);
+        })
+    }
 }
 
 export default App;

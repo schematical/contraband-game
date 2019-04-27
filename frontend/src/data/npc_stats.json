@@ -2,7 +2,8 @@
   {
     "namespace": "schematical:npc_stats:health",
     "name": "health",
-    "startValue": 100
+    "startValue": 100,
+    "type": "basic"
 
   },
   {

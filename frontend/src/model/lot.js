@@ -2,12 +2,12 @@ import Building from './building';
 import Tile from './tile';
 import * as PIXI from 'pixi.js';
 import Material from "./material";
-import Population from "./population";
 import NPC from "./npc";
 import {Helper} from "../util/Helper";
 import _ from "underscore";
 import NPCHuntBehavior from "./ai/NPCHuntBehavior";
 import NPCWonderBehavior from "./ai/NPCWonderBehavior";
+import NPCAttackBehavior from "./ai/NPCAttackBehavior";
 class Lot{
     static get States(){
         return {
@@ -111,6 +111,12 @@ class Lot{
                 faction: null,//CIVILIAN ??,
                 lot: this
             });
+            npc.addAIBehavior(new NPCAttackBehavior({
+                priority: 10,
+                filter:function(potentialTarget){
+                    return (potentialTarget.type === NPC.Type.HUMAN);
+                }
+            }));
             npc.addAIBehavior(new NPCHuntBehavior({
                 priority: 20,
                 filter:function(potentialTarget){
@@ -227,34 +233,51 @@ class Lot{
         building.populateNPCs();
         this.buildings.push(building);
     }
-    render(container){
+    render(container,  _options){
+        let options = {
+            refresh: false
+        };
+        _.extend(options, _options);
+
         let size = 64;
         let texture = this.app.textureManager.getLotObservedDefault();
         if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
             texture = this.app.textureManager.getLotObservedDefault();
         }
-        this.sprite = new PIXI.Sprite(texture);
-        //sprite.anchor.set(0.5);
-        this.sprite.x = this.x * (size + 8);
-        this.sprite.y = this.y * (size + 8);
-        this.sprite.width = size;
-        this.sprite.height = size;
-        container.addChild(this.sprite);
-        // Opt-in to interactivity
-        this.sprite.interactive = true;
-        this.sprite.buttonMode = true;
-        this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
-        this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
-        this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
-        container.addChild(this.sprite);
+        if( options.refresh){
+            //TODO: Delete the sprite
+            this.sprite = null;
+        }
+        if(
+            !this.sprite
+        ) {
+            this.sprite = new PIXI.Sprite(texture);
+            //sprite.anchor.set(0.5);
+            this.sprite.x = this.x * (size + 8);
+            this.sprite.y = this.y * (size + 8);
+            this.sprite.width = size;
+            this.sprite.height = size;
+            container.addChild(this.sprite);
+            // Opt-in to interactivity
+            this.sprite.interactive = true;
+            this.sprite.buttonMode = true;
+            this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
+            this.sprite.on('pointerover', _.bind(this.onPointerOver, this));
+            this.sprite.on('pointerout', _.bind(this.onPointerOut, this))
+            container.addChild(this.sprite);
+        }else{
+            this.sprite.texture = texture;
+        }
+
+
         if(this.getFactionLotState(this.app.playerFaction, Lot.States.MAPPED)) {
             this.eachTile((tile) => {
-                tile.render(this.sprite);//this.container);
+                tile.render(this.sprite, options);//this.container);
             })
         }
         if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
             this.npcs.forEach((npc) => {
-                npc.render(this.sprite);
+                npc.render(this.sprite, options);
             });
         }
 

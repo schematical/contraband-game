@@ -1,0 +1,37 @@
+[
+  {
+    "namespace": "schematical:dialog:death1",
+    "text": "Arggggg...",
+    "event": "death"
+  },
+  {
+    "namespace": "schematical:dialog:attack_receive_1",
+    "text": "Ouch!",
+    "event": "attack_receive"
+  },
+  {
+    "namespace": "schematical:dialog:attack_receive_2",
+    "text": "Save me!",
+    "event": "attack_receive"
+  },
+  {
+    "namespace": "schematical:dialog:attack_receive_3",
+    "text": "Tis but a flesh wound!",
+    "event": "attack_receive"
+  },
+  {
+    "namespace": "schematical:dialog:attack_receive_4",
+    "text": "Run awayyyyyy!!",
+    "event": "attack_receive"
+  },
+  {
+    "namespace": "schematical:dialog:heal1",
+    "text": "Ah that feels better!",
+    "event": "heal"
+  },
+  {
+    "namespace": "schematical:dialog:zombie_moan1",
+    "text": "Gaaaarrrhhhhhh....",
+    "event": "zombie_moan"
+  }
+]
