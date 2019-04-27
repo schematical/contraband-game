@@ -2,6 +2,13 @@ import _ from 'underscore';
 
 import NPCBehavior from "./NPCBehavior";
 class NPCHuntBehavior extends NPCBehavior{
+    static get States(){
+        return {
+            "Hunting": "Hunting",
+            "Fleeing": "Fleeing"
+        }
+
+    }
     constructor(data){
         super(data);
 
@@ -9,8 +16,12 @@ class NPCHuntBehavior extends NPCBehavior{
             throw new Error("Must have a `filter` to hunt");
         }
         this.filter = this.filter.bind(this);
+        if(!_.isUndefined(this.shouldFlee)) {
+            this.shouldFlee = this.shouldFlee.bind(this);
+        }
 
     }
+
     shouldExecute(){
 
         //Find a target
@@ -34,12 +45,27 @@ class NPCHuntBehavior extends NPCBehavior{
 
     }
     continueExecuting(){
+        if(!this.target){
+            return false;
+        }
+        if(this.target.isDead()){
+            this.target = null;
+            return false;
+        }
+        if(!this.target.awake){
+            this.target = null;
+            return false;
+        }
         return true;
     }
     execute(){
-
+        this.state = NPCHuntBehavior.States.Hunting;
         let nVec = this.npc.normalizedVectorTo(this.target);
-        console.log("Hunting Target: " + this.target.type + " " + this.target.id , nVec);
+        if(this.shouldFlee && this.shouldFlee(this.target)){
+            nVec.x *= -1;
+            nVec.y *= -1;
+        }
+
         this.npc.velocity = {
             x: nVec.x,
             y: nVec.y

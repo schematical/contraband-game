@@ -37,7 +37,11 @@
   {
     "namespace": "schematical:npc_stats:reputation",
     "name": "reputation",
-    "startValue": 50
+    "startValue": 50,
+    "startRange": {
+      "min": 20,
+      "max": 80
+    }
   },
   {
     "namespace": "schematical:npc_stats:run_speed",
@@ -52,23 +56,46 @@
   {
     "namespace": "schematical:npc_stats:muscle",
     "name": "muscle",
-    "startValue": 2
+    "startValue": 2,
+    "startRange": {
+      "min": 1,
+      "max": 5
+    }
   },
   {
     "namespace": "schematical:npc_stats:body_temp",
     "name": "body temp",
     "startValue": 37
+
   },
   {
     "namespace": "schematical:npc_stats:aggression",
     "desc": "How likely an NPC is to start a fight or flee",
     "name": "aggression",
-    "startValue": 3
+    "startValue": 3,
+    "startRange": {
+      "min": 2,
+      "max": 8
+    }
   },
   {
     "namespace": "schematical:npc_stats:desperation",
     "desc": "How likely an NPC is to do something risky or commit a crime",
     "name": "desperation",
+    "startRange": {
+      "min": 2,
+      "max": 8
+    },
+    "startValue": 3
+  },
+  {
+    "namespace": "schematical:npc_stats:stealth",
+    "desc": "How likely an NPC is to do something risky or commit a crime",
+    "name": "desperation",
+    "startRange": {
+      "min": 2,
+      "max": 6
+    },
     "startValue": 3
   }
 

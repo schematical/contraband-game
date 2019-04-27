@@ -19,6 +19,10 @@ import LotDetailComponent from "./components/LotDetailComponent";
 import Lot from "./model/lot";
 import * as _ from "underscore";
 import NPCWonderBehavior from "./model/ai/NPCWonderBehavior";
+import BuildingDetailComponent from "./components/BuildingDetailComponent";
+import TaskAssignmentComponent from "./components/TaskAssignmentComponent";
+import ModalComponent from "./components/ModalComponent";
+import NPCTaskBehavior from "./model/ai/NPCTaskBehavior";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -40,6 +44,7 @@ class App extends Component {
         this.textureManager = new TextureManager();
         this.factions = [];
         this._npcId = 0;
+        this.gui = {};
 
 
     }
@@ -79,38 +84,39 @@ class App extends Component {
             <div className="App">
                 <NavBarComponent app={this}/>
                 <HeaderComponent />
-                <div className="row">
-                    <div className="span5 bs-docs-sidebar">
-                        {/*{ this.state.selected_building &&
-                      <ul className="nav nav-list bs-docs-sidenav">
-                          <li><a href="#download-bootstrap">{this.registry.buildings.get(this.state.selected_building.type).name}</a></li>
-                            {this.state.selected_building.npcs.map((value, index) => {
-                                      return <li><a href="#file-structure"><i className="icon-chevron-right"></i> {value.type} {index}</a></li>
-                                })
+                <div className="container">
+                    <div className="row">
+                        <div className="span5 bs-docs-sidebar">
+
+                            { this.state.selected_lot &&
+                            <LotDetailComponent app={this} lot={this.state.selected_lot} />
+                            }
+                            {this.state.selected_npc &&
+                            <NPCDetailComponent app={this} npc={this.state.selected_npc}/>
+                            }
+                            { this.state.selected_building &&
+                            <BuildingDetailComponent app={this} building={this.state.selected_building} />
                             }
 
-                      </ul>
-                  }*/}
-                        { this.state.selected_lot &&
-                        <LotDetailComponent app={this} lot={this.state.selected_lot} />
-                        }
-                        {this.state.selected_npc &&
-                        <NPCDetailComponent app={this} npc={this.state.selected_npc}/>
-                        }
+                        </div>
+                        <div className="span7" >
+
+                            {!this.state.started &&
+                            <div className="jumbotron">
+                                <h1>Necropolis</h1>
+                                <p className="lead">It would appear that the end of days is upon us. You and 3 of your friends find yourself in the middle of a Zombie apocalypse. They look to you to lead them forward through these perilous times.
+                                </p>
+                                <a className="btn btn-large btn-success" href="#" onClick={this.start}>Begin your journey</a>
+                            </div> }
+                            {this.state.text }
+                        </div>
                     </div>
-                    <div className="span7" >
-                        {!this.state.started &&
-                        <div className="jumbotron">
-                            <h1>Necropolis</h1>
-                            <p className="lead">It would appear that the end of days is upon us. You and 3 of your friends find yourself in the middle of a Zombie apocalypse. They look to you to lead them forward through these perilous times.
-                            </p>
-                            <a className="btn btn-large btn-success" href="#" onClick={this.start}>Begin your journey</a>
-                        </div> }
-                        {this.state.text }
-                    </div>
+                    <ModalComponent app={this} onStart={(modal)=>{
+                         this.gui.taskAssignmentModal = modal;
+                    }}>
+                        <TaskAssignmentComponent app={this} />
+                    </ModalComponent>
                 </div>
-
-
             </div>
         );
     }
@@ -176,6 +182,9 @@ class App extends Component {
             })
             npc.populateDefaults();
             npc.populateRandom();
+            npc.addAIBehavior(new NPCTaskBehavior({
+                priority: 20
+            }));
             npc.addAIBehavior(new NPCWonderBehavior({
                 priority: 50
             }));
@@ -259,7 +268,7 @@ class App extends Component {
             .wheel()
             .decelerate();
 
-        this.pixicontainer.zoom(-512);
+        this.pixicontainer.zoom(-512);//-1028
 
 
 
@@ -285,7 +294,17 @@ class App extends Component {
         this.setState({selected_lot: lot});
         lot.guiSelect();
     }
+    guiSelectBuilding(building){
+        this.guiClearSelection();
+        this.setState({selected_building: building});
+        building.guiSelect();
+    }
     guiClearSelection(){
+        if(this.state.selected_building){
+            this.state.selected_building.guiDeselect();
+            this.state.selected_building = null;
+
+        }
         if(this.state.selected_lot){
             this.state.selected_lot.guiDeselect();
             this.state.selected_lot = null;
@@ -301,6 +320,21 @@ class App extends Component {
         this.guiClearSelection();
         this.setState({selected_npc: npc});
 
+    }
+    guiPromptTask(options){
+
+        this.gui.taskAssignmentComponent.show(options)
+    }
+    getNPCsByFaction(faction){
+        let npcs = [];
+
+        this.npcs.forEach((npc)=>{
+
+            if(npc.faction && npc.faction.namespace == faction.namespace){
+                npcs.push(npc);
+            }
+        })
+        return npcs;
     }
 
 }

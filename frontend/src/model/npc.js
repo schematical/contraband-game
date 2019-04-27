@@ -14,10 +14,22 @@ class NPC{
         this.traits = [];
         this.stats = {};
         this.behaviors = [];
+        this.awake = true;
+        this.alive = true;
+        this.tasks = [];
         _.extend(this, data);
 
 
-
+    }
+    addTask(task){
+        task.npc = this;
+        this.tasks.push(task);
+        this.tasks = _.sortBy(this.tasks, (task)=>{
+            return task.priority || 100;
+        })
+    }
+    getCurrentTask(){
+        return this.tasks[0] || null;
     }
     addAIBehavior(behavior){
         behavior.npc = this;
@@ -31,7 +43,7 @@ class NPC{
         let stats = this.app.registry.npc_stats.list();
 
         Object.keys(stats).forEach((namespace)=>{
-            this.stats[namespace] = stats[namespace].startValue;
+            this.stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue)
         })
     }
     populateRandom(){
@@ -90,7 +102,7 @@ class NPC{
         this.lot.app.setState({text: ""});
     }
     attemptLotTransition(x, y) {
-        let debutId = (this.name || (this.type + " " + this.id));
+
 
         //Check for walls?
         let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
@@ -138,6 +150,12 @@ class NPC{
     tick(){
         this.tickAI();
         this.tickPhysics();
+        this.tickBiology();
+    }
+    tickBiology(){
+        //Cause hunger
+        //check damage
+
     }
     tickAI(){
 
@@ -183,25 +201,25 @@ class NPC{
         if(this.goalLotPos.x < 0){
             //Test if can wonder west
             if(!this.attemptLotTransition( -1, 0)){
-                return this.changeVelocity();
+                this.goalLotPos.x =  this.lotPos.x;
             }
         }
         if(this.goalLotPos.x > 4){
             //Test if can wonder west
             if(!this.attemptLotTransition( 1, 0)){
-                return this.changeVelocity();
+                this.goalLotPos.x =  this.lotPos.x;
             }
         }
         if(this.goalLotPos.y < 0){
             //Test if can wonder west
             if(!this.attemptLotTransition( 0, -1)){
-                return this.changeVelocity();
+                this.goalLotPos.y =  this.lotPos.y;
             }
         }
         if(this.goalLotPos.y > 4){
             //Test if can wonder west
             if(!this.attemptLotTransition( 0, 1)){
-                return this.changeVelocity();
+                this.goalLotPos.y =  this.lotPos.y;
             }
         }
 
@@ -231,6 +249,7 @@ class NPC{
     }
     sleep(){
         this.sprite.visible = false;
+        this.awake = false;
     }
     destroy(){
         this.sprite.destroy();
@@ -276,6 +295,9 @@ class NPC{
             nVec.y = 0;
         }
         return nVec;
+    }
+    isDead(){
+        return !this.isAlive;
     }
 
 }

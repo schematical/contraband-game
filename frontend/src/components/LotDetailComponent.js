@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import NPCListComponent from "./NPCListComponent";
+import Lot from "../model/lot";
+import NPCMoveTask from "../model/ai/NPCMoveTask";
 
 
 class LotDetailComponent extends Component {
@@ -7,6 +9,7 @@ class LotDetailComponent extends Component {
     super(props);
     this.app = props.app;
     this.lot = props.lot;
+    this.promptActionExplore = this.promptActionExplore.bind(this);
   }
   render() {
     return (
@@ -18,11 +21,11 @@ class LotDetailComponent extends Component {
                     <i className="icon-chevron-right"></i> {npc.name || npc.type} {index}</a>
                 </li>
             })}*/}
-            <li className="divider"></li>
+            <li className="nav-header">Buildings</li>
             {this.lot.buildings.map((building, index) => {
                 return <div>
                     <li>
-                        <a href="#file-structure">
+                        <a href="#file-structure"  onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectBuilding(building) }} >
                             <i className="icon-chevron-right"></i>
                             {this.app.registry.buildings.get(building.type).name} {index}
                         </a>
@@ -38,9 +41,28 @@ class LotDetailComponent extends Component {
                     })}*/}
                 </div>
             })}
+            <li className="nav-header">Actions</li>
+            {
+                !this.lot.getFactionLotState(this.app.playerFaction, Lot.States.EXPLORED) &&
+                <li>
+                    <a href="#file-structure" onClick={this.promptActionExplore}>
+                        Explore
+                    </a>
+                </li>
+            }
         </ul>
     );
   }
+    promptActionExplore(event){
+        this.props.app.guiPromptTask({
+            taskConstructor:(npc)=>{
+                let task = new NPCMoveTask({
+                    lot:this.lot
+                })
+                return task;
+            }
+        });
+    }
 }
 
 export default LotDetailComponent;

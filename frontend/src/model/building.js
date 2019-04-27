@@ -29,6 +29,12 @@ class Building{
 
 
     }
+    guiDeselect(){
+
+    }
+    guiSelect(){
+
+    }
 
 }
 export default Building;

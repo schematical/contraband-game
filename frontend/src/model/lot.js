@@ -62,6 +62,12 @@ class Lot{
             }
         })
     }
+    getGlobalPos(){
+        return {
+            x: this.x,
+            y: this.y
+        }
+    }
     populateRandom(){
         this.populateRandomBuilding();
 
@@ -126,6 +132,16 @@ class Lot{
                 faction: null,//CIVILIAN ??,
                 lot: this
             })
+            npc.addAIBehavior(new NPCHuntBehavior({
+                priority: 20,
+                filter:function(potentialTarget){
+                    return (potentialTarget.type === NPC.Type.ZOMBIE);
+                },
+                shouldFlee:function(target){
+                    this.state = NPCHuntBehavior.States.Fleeing;
+                    return true;
+                }
+            }));
             npc.addAIBehavior(new NPCWonderBehavior({
                 priority: 50
             }));
