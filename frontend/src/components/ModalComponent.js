@@ -40,6 +40,9 @@ class ModalComponent extends Component {
     show(){
         window.jQuery('#' +  this.uniqueId).modal('show');
     }
+    hide(){
+        window.jQuery('#' +  this.uniqueId).modal('hide');
+    }
 }
 
 export default ModalComponent;

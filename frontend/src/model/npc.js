@@ -2,6 +2,7 @@ import _ from 'underscore';
 import {Helper} from "../util/Helper";
 import * as PIXI from "pixi.js";
 import  names from '../data/names';
+import Lot from "./lot";
 class NPC{
     static get Type(){
         return {
@@ -107,7 +108,10 @@ class NPC{
         //Check for walls?
         let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
         if (this.faction) {
-            return false;//TODO: Stop them from moving
+            if(!destLot.getFactionLotState(this.faction, Lot.States.ALLOWED)){
+                return false;
+            }
+
         }
         if (_.isNull(destLot)) {
 

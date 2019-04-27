@@ -55,6 +55,9 @@ class LotDetailComponent extends Component {
   }
     promptActionExplore(event){
         this.props.app.guiPromptTask({
+            onComplete:()=>{
+                this.lot.setFactionLotState(this.app.playerFaction, Lot.States.ALLOWED, true);
+            },
             taskConstructor:(npc)=>{
                 let task = new NPCMoveTask({
                     lot:this.lot

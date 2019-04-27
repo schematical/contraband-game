@@ -14,7 +14,7 @@ class NPCMoveTask extends NPCTask{
 
     }
     execute(){
-        console.log("MOVING....TASK", this.lot.x, this.lot.y);
+
         if(
             this.npc.lot.x != this.lot.x ||
             this.npc.lot.y != this.lot.y

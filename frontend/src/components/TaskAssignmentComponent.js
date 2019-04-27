@@ -40,6 +40,10 @@ class TaskAssignmentComponent extends Component {
                 task
             )
         });
+        if(!_.isUndefined(this._options.onComplete)){
+            this._options.onComplete(this);
+        }
+        this.app.gui.taskAssignmentModal.hide();
 
     }
     show(options){

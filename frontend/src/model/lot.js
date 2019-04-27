@@ -12,6 +12,7 @@ class Lot{
     static get States(){
         return {
             OBSERVED: "OBSERVED",
+            ALLOWED: "ALLOWED",
             EXPLORED: "EXPLORED",
             OCCUPIED: "OCCUPIED",
             MAPPED: "MAPPED"
