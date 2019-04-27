@@ -25,6 +25,7 @@ import TaskAssignmentComponent from "./components/TaskAssignmentComponent";
 import ModalComponent from "./components/ModalComponent";
 import NPCTaskBehavior from "./model/ai/NPCTaskBehavior";
 import NPCDialogManager from "./util/NPCDialogManager";
+import NPCAIManager from "./model/ai/NPCAIManager";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -48,6 +49,7 @@ class App extends Component {
         this.npcs =[];
         this.textureManager = new TextureManager();
         this.dialogManager = new NPCDialogManager(this.registry.dialog.list());
+        this.aiManager = new NPCAIManager();
         this.factions = [];
         this._npcId = 0;
         this.gui = {};
@@ -220,12 +222,7 @@ class App extends Component {
                 type: "*"
             });
             npc.populateRandom();
-            npc.addAIBehavior(new NPCTaskBehavior({
-                priority: 20
-            }));
-            npc.addAIBehavior(new NPCWonderBehavior({
-                priority: 50
-            }));
+            this.aiManager.setupFactionMember(npc);
             startLot.npcs.push(
                 npc
             );

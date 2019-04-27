@@ -111,21 +111,8 @@ class Lot{
                 faction: null,//CIVILIAN ??,
                 lot: this
             });
-            npc.addAIBehavior(new NPCAttackBehavior({
-                priority: 10,
-                filter:function(potentialTarget){
-                    return (potentialTarget.type === NPC.Type.HUMAN);
-                }
-            }));
-            npc.addAIBehavior(new NPCHuntBehavior({
-                priority: 20,
-                filter:function(potentialTarget){
-                    return (potentialTarget.type === NPC.Type.HUMAN);
-                }
-            }));
-            npc.addAIBehavior(new NPCWonderBehavior({
-                priority: 50
-            }));
+
+            this.app.aiManager.setupZombie(npc);
             this.addNPC(npc);
         }
 
@@ -139,19 +126,7 @@ class Lot{
                 faction: null,//CIVILIAN ??,
                 lot: this
             })
-            npc.addAIBehavior(new NPCHuntBehavior({
-                priority: 20,
-                filter:function(potentialTarget){
-                    return (potentialTarget.type === NPC.Type.ZOMBIE);
-                },
-                shouldFlee:function(target){
-                    this.state = NPCHuntBehavior.States.Fleeing;
-                    return true;
-                }
-            }));
-            npc.addAIBehavior(new NPCWonderBehavior({
-                priority: 50
-            }));
+            this.app.aiManager.setupCivilian(npc);
             this.addNPC(
                 npc
             )

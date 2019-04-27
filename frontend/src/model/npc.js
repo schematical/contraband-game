@@ -54,6 +54,9 @@ class NPC{
             return behavior.priority;
         })
     }
+    clearAIBehaviors(){
+        this.behaviors = [];
+    }
     populateStats( _options){
         let options = {
             type:"basic"
@@ -62,6 +65,7 @@ class NPC{
         //Iterate through all stats
         let stats = this.app.registry.npc_stats.list();
         this.stats = {};
+        let _this = this;
         Object.keys(stats).forEach((namespace)=>{
             if(!_.isUndefined(this._stats[namespace])){
                 return;
@@ -76,7 +80,7 @@ class NPC{
             }
             this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
 
-            let _this = this;
+
             Object.defineProperty( this.stats, stats[namespace].shortNamespace, {
                 get: function() {
                     console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
@@ -250,6 +254,9 @@ class NPC{
                     ()=>{
                         this._stats["schematical:npc_stats:health"] = 100;
                         this.type = NPC.Type.ZOMBIE;
+                        this.faction = null;
+                        this.clearAIBehaviors();
+                        this.app.aiManager.setupZombie(this);
                         this.render();
                         this.setCaption(this.app.dialogManager.getEventChat("zombie_moan").text);
                     }
