@@ -274,8 +274,8 @@ class App extends Component {
         this.pixicontainer =  new Viewport({
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
-            worldWidth: 1000,
-            worldHeight: 1000,
+            worldWidth: 300,
+            worldHeight: 300,
 
             interaction: app.renderer.plugins.interaction // the interaction module is important for wheel() to work properly when renderer.view is placed or scaled
         });
@@ -305,7 +305,10 @@ class App extends Component {
             .wheel()
             .decelerate();
 
-        this.pixicontainer.zoom(-700);//-1028
+        let i =-1 * window.innerWidth;
+        //alert(i);
+
+        this.pixicontainer.fitWorld(true);//zoom(i);//-1028);
 
 
 

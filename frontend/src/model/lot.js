@@ -162,7 +162,7 @@ class Lot{
         let width = this.app.registry.range(data, "size", 1);
         let startX = Math.floor(Math.random() * (4 - width));
         let startY = Math.floor(Math.random() * (4 - depth));
-
+        let area = width * depth;
         _x += startX;
         _y += startY;
 
@@ -171,7 +171,7 @@ class Lot{
             x: _x + startX,
             y: _y + startY,
             type: data.namespace,
-            tiles: [],
+
             height: this.app.registry.range(data, "height", 1),
             primaryMaterial: new Material(
                 this.app.registry.materials.get(
@@ -197,12 +197,11 @@ class Lot{
                 this.cols[x] =  this.cols[x] || [];
                 this.cols[x][y] = new Tile({
                     lot: this,
-                    building: building,
                     x: x,
                     y: y,
                     bottom: (y + 1 == _y + depth)
                 })
-                building.tiles.push(this.cols[x][y]);
+                building.addTile(this.cols[x][y]);
             }
         }
         building.populateNPCs();

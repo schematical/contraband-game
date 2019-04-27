@@ -3,9 +3,15 @@ import NPC from "./npc";
 import NPCWonderBehavior from "./ai/NPCWonderBehavior";
 class Building{
     constructor(data){
-
+        this.capacity = 1;
+        this.tiles = [];
         _.extend(this, data);
 
+
+    }
+    addTile(tile){
+        tile.building = this;
+        this.tiles.push(tile);
 
     }
     populateNPCs(){
