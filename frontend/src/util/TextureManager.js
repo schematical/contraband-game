@@ -53,15 +53,32 @@ class TextureManager{
     }
     getBuildingTileDefault(tile){
         let color = Helper.hexToRgb(tile.building.primaryMaterial.color);
-
+        let secondaryColor = Helper.hexToRgb(tile.building.secondaryMaterial.color);
         return this.generateSquare(TILE_SIZE, TILE_SIZE, color, 255, (x,y, color)=>{
             let multiplier = 1;
 
-            if(tile.bottom && y > TILE_SIZE / 2) {
-                multiplier = .5;
+            if(y > TILE_SIZE  * .5) {
+
+                if(
+                    tile.ingress &&
+                    y > TILE_SIZE * .7 &&
+                    x > TILE_SIZE * .4 &&
+                    x < TILE_SIZE * .6
+                ) {
+
+                    multiplier = .3;
+                    color = _.clone(secondaryColor)
+
+                }else if(tile.bottom){
+                    multiplier = .2;
+                    color = _.clone(color);
+
+                }
                 color.r *= multiplier;
                 color.g *= multiplier;
                 color.b *= multiplier;
+
+
             }
             return color;
         });

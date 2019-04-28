@@ -21,6 +21,21 @@ class BuildingDetailComponent extends Component {
             <li className="nav-header">Materials</li>
             <li>
               <a href="#file-structure">
+                Cover: {this.props.building.cover}
+              </a>
+            </li>
+            <li>
+              <a href="#file-structure">
+                Ingress: {this.props.building.ingress}
+              </a>
+            </li>
+            <li>
+              <a href="#file-structure">
+                Egress: {this.props.building.egress}
+              </a>
+            </li>
+            <li>
+              <a href="#file-structure">
                 Primary Material: {this.props.building.primaryMaterial.name}
               </a>
             </li>

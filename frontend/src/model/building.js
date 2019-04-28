@@ -6,6 +6,7 @@ class Building{
         this.capacity = 1;
         this.tiles = [];
         _.extend(this, data);
+        this.ingressTiles = [];
 
 
     }
@@ -13,22 +14,30 @@ class Building{
         tile.building = this;
         this.tiles.push(tile);
 
+
     }
     populateNPCs(){
         this.npcs = [];
 
         let npcChance = Math.floor((this.lot.app.rnd() * 25) - 20);
-
+        let types = [NPC.Type.HUMAN, NPC.Type.ZOMBIE];
+        let type = types[Math.floor(this.lot.app.rnd() * types.length)];
         for(let i = (npcChance); i > 0; i -= 1){
 
              let npc = this.lot.app.addNPC({
-                type: NPC.Type.HUMAN,
-                faction: null,//CIVILIAN ??,
+                type: type,
+                faction: null,
                 lot: this.lot
             });
-            npc.addAIBehavior(new NPCWonderBehavior({
-                priority: 50
-            }));
+             switch(type){
+                 case(NPC.Type.HUMAN):
+                     npc.app.aiManager.setupCivilian(npc);
+                 break;
+                 case(NPC.Type.ZOMBIE):
+                     npc.app.aiManager.setupZombie(npc);
+                 break;
+             }
+            npc.cover = this;
             this.npcs.push(npc);
         }
 

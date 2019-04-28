@@ -30,15 +30,8 @@ class LotDetailComponent extends Component {
                             {this.app.registry.buildings.get(building.type).name} {index}
                         </a>
                     </li>
-                    <NPCListComponent npcs={building.npcs} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />
-                    {/*{building.npcs.map((npc, index2) => {
-                        return <li>
-                            <a href="#file-structure" onClick={(event)=>{ event.preventDefault(); return  this.app.guiSelectNPC(npc) }}>
-                                <i className="icon-chevron-right"></i>
-                                {npc.type} {index2}
-                            </a>
-                        </li>;
-                    })}*/}
+                    {/*<NPCListComponent npcs={building.npcs} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />*/}
+
                 </div>
             })}
             <li className="nav-header">Actions</li>

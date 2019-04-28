@@ -6,17 +6,24 @@ import NPCTaskBehavior from "./NPCTaskBehavior";
 
 class NPCAIManager{
     setupZombie(npc){
+        function filterHumanNotInCover(potentialTarget){
+
+            if(potentialTarget.type !== NPC.Type.HUMAN){
+                return false;
+            }
+            if(potentialTarget.cover) {
+                return false;
+            }
+
+            return true;
+        }
         npc.addAIBehavior(new NPCAttackBehavior({
             priority: 10,
-            filter:function(potentialTarget){
-                return (potentialTarget.type === NPC.Type.HUMAN);
-            }
+            filter:filterHumanNotInCover
         }));
         npc.addAIBehavior(new NPCHuntBehavior({
             priority: 20,
-            filter:function(potentialTarget){
-                return (potentialTarget.type === NPC.Type.HUMAN);
-            }
+            filter:filterHumanNotInCover
         }));
         npc.addAIBehavior(new NPCWonderBehavior({
             priority: 50
@@ -26,7 +33,13 @@ class NPCAIManager{
         npc.addAIBehavior(new NPCHuntBehavior({
             priority: 20,
             filter:function(potentialTarget){
-                return (potentialTarget.type === NPC.Type.ZOMBIE);
+                if(potentialTarget.type !== NPC.Type.ZOMBIE){
+                    return false;
+                }
+                if(potentialTarget.cover){
+                    return false;
+                }
+                return true;
             },
             shouldFlee:function(target){
                 this.state = NPCHuntBehavior.States.Fleeing;

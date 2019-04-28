@@ -180,7 +180,7 @@ class App extends Component {
 
 
             this.npcs.forEach((npc)=>{
-                if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
+                if(!npc.lot || npc.cover || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
                     return;
                 }
                 npc.tickPhysics(app.ticker.elapsedMS);
@@ -189,7 +189,7 @@ class App extends Component {
         }else if(newState.ticksSinceNPCAI > 1000){
             this.state.ticksSinceNPCAI = 0;
             this.npcs.forEach((npc)=>{
-                if(!npc.lot || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
+                if(!npc.lot || npc.cover || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
                     return;
                 }
                 if(npc.name){

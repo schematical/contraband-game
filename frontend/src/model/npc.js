@@ -375,8 +375,12 @@ class NPC{
         this.sprite.destroy();
     }
     getGlobalPos(){
+        if(!this.lotPos){
+            console.error(this);
+            throw new Error("Cant call this on an NPC with an empty `lotPos`");
+        }
         return {
-            x: this.lot.x + ( this.lotPos.x / 4),
+            x: this.lot.x + (this.lotPos.x / 4),
             y: this.lot.y + (this.lotPos.y / 4)
         }
     }

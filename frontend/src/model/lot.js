@@ -171,7 +171,9 @@ class Lot{
             x: _x + startX,
             y: _y + startY,
             type: data.namespace,
-
+            capacity: area * 2,
+            ingress: this.app.registry.range(data, "ingress", 1),
+            egress: this.app.registry.range(data, "egress", 1),
             height: this.app.registry.range(data, "height", 1),
             primaryMaterial: new Material(
                 this.app.registry.materials.get(
@@ -190,19 +192,41 @@ class Lot{
 
 
 
-
+        let bottomTiles = [];
         //Create tiles
         for(let x = _x; x < _x + width; x += 1){
             for(let y = _y; y < _y + depth; y += 1){
+                let bottom = (y + 1 == _y + depth);
+                let side = 0;
+                if(y == _y){
+                    side = -1;
+                }else if(y == (y+depth - 1)){
+                    side = 1;
+                }
                 this.cols[x] =  this.cols[x] || [];
                 this.cols[x][y] = new Tile({
                     lot: this,
                     x: x,
                     y: y,
-                    bottom: (y + 1 == _y + depth)
+                    bottom: bottom,
+                    side: side
                 })
+                if(bottom){
+                    bottomTiles.push(this.cols[x][y]);
+                }
                 building.addTile(this.cols[x][y]);
             }
+        }
+
+        bottomTiles = _.shuffle(bottomTiles)
+
+        for(let i = 0; i < building.ingress; i++){
+            let tile = bottomTiles[i];
+            if(!tile){
+                return;//throw new Error("Your math is off");
+            }
+            tile.ingress = true;
+            building.ingressTiles.push(tile);
         }
         building.populateNPCs();
         this.buildings.push(building);
