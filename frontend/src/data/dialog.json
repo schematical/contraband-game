@@ -64,5 +64,89 @@
     "text": "Take that!",
     "event": "attack_give",
     "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1a_1",
+    "text": "Did you see the most recent episode of Game of Thrones?",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1a_2",
+    "text": "I wonder if that girl will call me back?",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1a_3",
+    "text": "I really have the munchies...",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1a_4",
+    "text": "I hope our Uber shows up soon",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1b_1",
+    "text": "That dude has had a few too many",
+    "event": "mission1b",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1b_2",
+    "text": "You okay green dude?",
+    "event": "mission1b",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1b_3",
+    "text": "I think he might be dead",
+    "event": "mission1b",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1c_1",
+    "text": "Oh my god! He is attacking us!",
+    "event": "mission1c",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1c_2",
+    "text": "That dude is missing an arm!",
+    "event": "mission1c",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1c_3",
+    "text": "He it trying to bite me!",
+    "event": "mission1c",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1d_1",
+    "text": "Oh my god that was scary",
+    "event": "mission1d",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1d_2",
+    "text": "Looks like there are more green guys out there",
+    "event": "mission1d",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1d_3",
+    "text": "We should go hide in one of those buildings",
+    "event": "mission1d",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1d_4",
+    "text": "Looks like the cell phones networks is down",
+    "event": "mission1d",
+    "type": "human"
   }
 ]

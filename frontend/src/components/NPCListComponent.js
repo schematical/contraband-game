@@ -38,7 +38,7 @@ class NPCListComponent extends Component {
           {this.props.npcs.map((npc, index2) => {
             return  <tr className="success">
                   <td>
-                    <input  type="checkbox" value={npc._selected} onChange={(event)=>{
+                    <input  type="checkbox" value={npc._selected} checked={npc._selected} onChange={(event)=>{
                       npc._selected = event.target.value;
                     }} />
                   </td>

@@ -26,6 +26,7 @@ import ModalComponent from "./components/ModalComponent";
 import NPCTaskBehavior from "./model/ai/NPCTaskBehavior";
 import NPCDialogManager from "./util/NPCDialogManager";
 import NPCAIManager from "./model/ai/NPCAIManager";
+import StoryManager from "./util/StoryManager";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -50,6 +51,7 @@ class App extends Component {
         this.textureManager = new TextureManager();
         this.dialogManager = new NPCDialogManager(this.registry.dialog.list());
         this.aiManager = new NPCAIManager();
+        this.storyManager = new StoryManager({app:this});
         this.factions = [];
         this._npcId = 0;
         this.gui = {};
@@ -156,7 +158,7 @@ class App extends Component {
         this.map.refreshLotVisibility(this.pixicontainer);
         this.refreshVisibleNPCS();
         this.map.render( this.pixicontainer );
-
+        this.storyManager.start("mission1")
 
 
     }
@@ -206,12 +208,13 @@ class App extends Component {
                     return;
                 }
                 if(npc.name){
-                    //npc.setCaption(npc.name);
+                    console.log("Ticking..." + npc.name)
                 }
                 npc.tickAI(app.ticker.elapsedMS);
                 npc.tickBiology(app.ticker.elapsedMS);
 
             })
+            this.storyManager.tick(newState.ticksSinceNPCPhysics);
         }
 
     }

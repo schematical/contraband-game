@@ -18,6 +18,9 @@ class NPCAttackBehavior extends NPCBehavior{
         //Find a target
         let targets = [];
         this.npc.lot.npcs.forEach((npc)=>{
+            if(npc.cover){
+                return;
+            }
             if(!this.filter(npc)){
                 return;
             }

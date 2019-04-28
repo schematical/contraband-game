@@ -143,6 +143,7 @@ class Lot{
     shuffleNPCSLotPos(){
         let npcsToTilesRatio =  this.emptyTileCoords.length / this.npcs.length ;
         let index = 0;
+        this.emptyTileCoords = _.shuffle( this.emptyTileCoords);
         _.shuffle(this.npcs).forEach((npc)=>{
             npc.lotPos = this.emptyTileCoords[Math.floor(index)];
             if(!npc.lotPos){

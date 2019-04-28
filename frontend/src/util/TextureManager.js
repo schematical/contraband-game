@@ -134,7 +134,7 @@ class TextureManager{
         if(!this.cache["TextStyle"]) {
             this.cache["TextStyle"] = new PIXI.TextStyle({
                 fontFamily: 'DOS',
-                fontSize: 12,
+                fontSize: 8,
                 fontWeight: 'bold',
                 fill: '#ffffff',
                 //stroke: '#4a1850',

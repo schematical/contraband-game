@@ -435,7 +435,9 @@ class NPC{
         ){
 
             let behavior = this.behaviors[index];
+            if(this.name){
 
+            }
             if(behavior.shouldExecute()){
                 this.activeBehavior = behavior;
             }
@@ -567,7 +569,7 @@ class NPC{
         return !this.alive;
     }
 
-    setCaption(text){
+    setCaption(text, duration){
 
 
         if(!this.captionSprite) {
@@ -582,17 +584,24 @@ class NPC{
         }else{
             this.captionSprite.text = text;
         }
-        this.app.addCountDown(3000, ()=>{
-            this.captionSprite.text = "";
-        })
-
+        if(duration !== -1) {
+            this.app.addCountDown(duration || 3000, () => {
+                this.captionSprite.text = "";
+            })
+        }
 
     }
     rndCaptionFromCollection(event){
         /*if(this.app.rnd() * 5 > 1){
             return;
         }*/
-        this.setCaption(this.app.dialogManager.getEventChat(event).text);
+        let text = null;
+        if(this.type == NPC.Type.ZOMBIE){
+            text = this.app.dialogManager.getEventChat('zombie_moan').text
+        }else{
+            text = this.app.dialogManager.getEventChat(event).text;
+        }
+        this.setCaption();
     }
 
 
