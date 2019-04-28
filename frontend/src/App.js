@@ -27,6 +27,7 @@ import NPCTaskBehavior from "./model/ai/NPCTaskBehavior";
 import NPCDialogManager from "./util/NPCDialogManager";
 import NPCAIManager from "./model/ai/NPCAIManager";
 import StoryManager from "./util/StoryManager";
+import FooterBarComponent from "./components/FooterBarComponent";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -57,6 +58,8 @@ class App extends Component {
         this.gui = {};
         this.tickCounters = [];
         this.visibleNPCs = [];
+        this.otherTickables = [];
+        this.alerts = [];
 
 
     }
@@ -114,6 +117,15 @@ class App extends Component {
 
                         </div>
                         <div className="span7" >
+                            {this.alerts.map((alert, index) => {
+                                return (<div key={index} className="alert alert-block">
+                                    <button type="button" className="close"  onClick={()=>{
+                                        this.removeAlert(alert);
+                                    }}>&times;</button>
+                                    <h4>Warning!</h4>
+                                    {alert.text}
+                                </div>)
+                            })}
 
                             {!this.state.started &&
                             <div className="jumbotron">
@@ -125,6 +137,7 @@ class App extends Component {
                             {this.state.text }
                         </div>
                     </div>
+                    <FooterBarComponent />
                     <ModalComponent app={this} onStart={(modal)=>{
                          this.gui.taskAssignmentModal = modal;
                     }}>
@@ -182,7 +195,9 @@ class App extends Component {
 
             this.state.ticksSinceNPCPhysics = 0;
 
-
+            this.otherTickables.forEach((tickable)=>{
+                tickable.tick(app.ticker.elapsedMS);
+            });
 
             this.visibleNPCs.forEach((npc)=>{
                 if(
@@ -273,6 +288,13 @@ class App extends Component {
                 }
             }
         })
+    }
+    zoom(width){
+        let height = (window.innerHeight/ window.innerWidth) * width;
+        this.pixicontainer.snapZoom({
+            width: width,
+            height: height
+        });
     }
     setupCanvas(){
 
@@ -449,6 +471,29 @@ class App extends Component {
             this.removeCountDown(tickCounter.namespace);
         })
     }
+    addOtherTickable(tickable){
+        tickable.namespace =  "tc_" + Math.random() * 99999;
+        let app = this;
+        tickable.remove = (function(){
+            app.removeOtherTickable(this);
+        }).bind(tickable);
+        this.otherTickables.push(tickable);
+    }
+    removeOtherTickable(tickable){
+        this.otherTickables = _.reject(this.otherTickables, (_tickable)=>{
+            return tickable.namespace == _tickable.namespace;
+        })
+    }
+    addAlert(alert) {
+        alert.namespace =  "tc_" + Math.random() * 99999;
+        this.alerts.push(alert);
+    }
+    removeAlert(alert){
+        this.alerts = _.reject(this.alerts, (_alert)=>{
+            return alert.namespace == _alert.namespace;
+        })
+    }
+
 }
 
 export default App;

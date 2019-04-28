@@ -69,19 +69,7 @@ class Lot{
             y: this.y
         }
     }
-    populateRandom(){
-        this.populateRandomBuilding();
 
-
-
-        this.cacheEmptyTiles();
-
-        this.populateNPCs();
-
-
-
-
-    }
     cacheEmptyTiles(){
         this.emptyTileCoords = [];
         for(let x = 0; x < 4; x++){

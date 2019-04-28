@@ -9,6 +9,9 @@ class NPCAIManager{
         if(potentialTarget.type !== NPC.Type.ZOMBIE){
             return false;
         }
+        if(potentialTarget.isDead()){
+            return false;
+        }
         if(potentialTarget.cover){
             return false;
         }

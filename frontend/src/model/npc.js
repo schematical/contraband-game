@@ -98,7 +98,7 @@ class NPC{
             }
             this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
 
-            console.log("stats[namespace].shortNamespace", stats[namespace].shortNamespace)
+            //console.log("stats[namespace].shortNamespace", stats[namespace].shortNamespace)
             Object.defineProperty( this.stats, stats[namespace].shortNamespace , {
                 get: function() {
                     console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
@@ -361,7 +361,29 @@ class NPC{
                 case("attack")://TODO: Enum
                     this._stats["schematical:npc_stats:health"] -= interaction.damage;//TODO: Apply defence and armor and stuff
                     this.rndCaptionFromCollection("attack_receive");
-
+                    for(let i = 0; i < 3; i++){
+                        let texture = this.app.textureManager.getNPCHumanDamageFluid(255);
+                        let sprite = new PIXI.Sprite(texture);
+                        let PARTICLE_SIZE = 1
+                        sprite.width = PARTICLE_SIZE;
+                        sprite.height = PARTICLE_SIZE;
+                        sprite.x  = this.sprite.x + (Math.random() * 4 - 2) * PARTICLE_SIZE;
+                        sprite.y = this.sprite.y + (Math.random() * 4 - 2) * PARTICLE_SIZE;
+                        let _this = this;
+                        this.app.addOtherTickable({
+                            sprite: sprite,
+                            alpha: 255,
+                            tick:function(){
+                                this.sprite.texture = _this.app.textureManager.getNPCHumanDamageFluid(this.alpha);
+                                this.alpha -= 5;
+                                if(this.alpha == 0){
+                                    this.sprite.destroy();
+                                    this.remove();
+                                }
+                            }
+                        });
+                        this.app.pixicontainer.addChild(sprite);
+                    }
                     break;
                 default:
                     throw new Error("Invalid `interaction.type`: " + interaction);
@@ -594,7 +616,7 @@ class NPC{
             this.captionSprite.text = text;
         }
         if(duration !== -1) {
-            this.app.addCountDown(duration || 3000, () => {
+            this.app.addCountDown(duration || 5000, () => {
                 this.captionSprite.text = "";
             })
         }

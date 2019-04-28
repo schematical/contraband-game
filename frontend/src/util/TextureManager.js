@@ -4,9 +4,20 @@ import _ from "underscore";
 const LOT_SIZE = 64;
 const NPC_SIZE = 4;
 const TILE_SIZE = 16;
+const PARTICLE_SIZE = 1;
 class TextureManager{
     constructor(){
         this.cache = {};
+    }
+    getNPCHumanDamageFluid(alpha){
+        if(_.isUndefined(alpha)){
+            alpha = 255;
+        }
+        if(!this.cache["LotObservedDefault_" + alpha]){
+            return this.cache["LotObservedDefault" + alpha] =  this.generateSquare(PARTICLE_SIZE, PARTICLE_SIZE, "#990000", alpha);
+        }
+        return this.cache["LotObservedDefault" + alpha];
+
     }
     getLotObservedDefault(){
         if(!this.cache["LotObservedDefault"]){
@@ -35,7 +46,7 @@ class TextureManager{
     }
     getNPCZombieObservedDowned(){
         if(!this.cache["NPCZombieObservedDowned"]){
-            return this.cache["NPCZombieObservedDowned"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#448844", 255);
+            return this.cache["NPCZombieObservedDowned"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#446644", 255);
         }
         return this.cache["NPCZombieObservedDowned"];
     }
@@ -57,6 +68,7 @@ class TextureManager{
         }
         return this.cache["NPCRecentlyDeceasedObservedDefault"];
     }
+
     getBuildingTileDefault(tile){
         let color = Helper.hexToRgb(tile.building.primaryMaterial.color);
         let secondaryColor = Helper.hexToRgb(tile.building.secondaryMaterial.color);

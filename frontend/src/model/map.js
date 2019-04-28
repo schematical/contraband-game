@@ -25,9 +25,20 @@ class Map{
                 y: y
             })
             if(x != 0 || y != 0) {
-                lot.populateRandom();
-            }else{
-                lot.cacheEmptyTiles();
+                lot.populateRandomBuilding();
+            }
+             lot.cacheEmptyTiles();
+            if(
+                (
+                    x < -1 ||
+                    x > 1
+                ) &&
+                (
+                    y < -1 ||
+                    y > 1
+                )
+            ){
+                lot.populateNPCs();
             }
             this.cols[x][y] = lot;
         }

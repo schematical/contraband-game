@@ -20,7 +20,7 @@ class BuildingDetailComponent extends Component {
             </li>
             <li className="nav-header">NPCs</li>
             {this.props.building.lot.getFactionLotState(this.props.app.playerFaction, Lot.States.EXPLORED) ?
-                <NPCListComponent npcs={this.props.building.npcs} app={this.props.app}/>
+                <NPCListComponent npcs={this.props.building.npcs} app={this.props.app} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />
                 :
                 <span>Unexplored...</span>
             }

@@ -48,6 +48,12 @@
     "type": "human"
   },
   {
+    "namespace": "schematical:dialog:attack_receive_5",
+    "text": "Back off me BRO!",
+    "event": "attack_receive",
+    "type": "human"
+  },
+  {
     "namespace": "schematical:dialog:dehydrated_1",
     "text": "So thirsty...",
     "event": "dehydrated",
@@ -64,7 +70,7 @@
     "text": "I am literally dieing of thirst",
     "event": "dehydrated_injury",
     "type": "human"
-  },,
+  },
   {
     "namespace": "schematical:dialog:heal1",
     "text": "Ah that feels better!",
@@ -80,6 +86,24 @@
   {
     "namespace": "schematical:dialog:attack_give_1",
     "text": "Take that!",
+    "event": "attack_give",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:attack_give_2",
+    "text": "Your going down BRO!",
+    "event": "attack_give",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:attack_give_3",
+    "text": "Bringing the pain!",
+    "event": "attack_give",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:attack_give_4",
+    "text": "Death to the ... undead",
     "event": "attack_give",
     "type": "human"
   },
@@ -164,6 +188,12 @@
   {
     "namespace": "schematical:dialog:mission1d_4",
     "text": "Looks like the cell phones networks is down",
+    "event": "mission1d",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1d_5",
+    "text": "I think I am going to be sick",
     "event": "mission1d",
     "type": "human"
   }

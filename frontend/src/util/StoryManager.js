@@ -76,11 +76,13 @@ class StoryManager{
                     {
                         _done: false,
                         onStart:()=>{
-                            this.app.pixicontainer.snapZoom({
-                                width: 128,
-                                height: 128
-                            });
-                            this.app.addCountDown(10000, ()=>{
+                            this.app.addAlert({
+                                text:"Your friends and you wait in a parking lot for your ride to arrive. " +
+                                    "As you wait you wonder how you all managed to dress in matching light blue shirts that, from a distance, make you look like square blocks." +
+                                    "Then suddenly you notice something off in the distance..."
+                            })
+                           this.app.zoom(128)
+                            this.app.addCountDown(20000, ()=>{
                                 this._done = true;
 
                             })
@@ -94,6 +96,11 @@ class StoryManager{
                     {
                         _done: false,
                         onStart:()=>{
+                            this.app.addAlert({
+                                text:"The person in the shadows steps forward making a gowning noise. " +
+                                    "All color has gone from their skin causing it to appear to anyone looking down on them from an arial view as greenish blob(which also happens to be a square) "  +
+                                    "As they approach you start to feel the hairs on your neck stand up.."
+                            })
                             this.zombieNpc = this.app.addNPC({
 
                                 type: NPC.Type.ZOMBIE,
@@ -108,6 +115,7 @@ class StoryManager{
                                 y:3.5
                             };
                             this.app.addNPCVisible(this.zombieNpc);
+                            this.factionNPCs[0].lot.render(this.app.pixicontainer);
                             this._done = false;
                             this.app.addCountDown(10000, ()=>{
                                 this._done = true;
@@ -121,7 +129,9 @@ class StoryManager{
                     },
                     {
                         onStart:()=>{
-
+                            this.app.addAlert({
+                                text:"The stranger  starts wildly clawing and biting at you and your friends. You are forced to defend your selves."
+                            })
                         },
                         dialogEvent: "mission1c",
                         isDone:()=>{
@@ -129,6 +139,13 @@ class StoryManager{
                         }
                     },
                     {
+                        onStart:()=>{
+                            this.app.addAlert({
+                                text:"The 4 of you over power the stranger knocking them to the ground. When the strangers head hits the pavement with a thud it bursts open spilling the contents in side." +
+                                    "In the distance you hear more moaning and the faint green blockish outline of more creatures like this." +
+                                    "It's probably a good idea to seek shelter"
+                            })
+                        },
                         dialogEvent: "mission1d",
                         isDone:()=>{
                             return false;
