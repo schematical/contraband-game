@@ -1,37 +1,68 @@
 [
   {
-    "namespace": "schematical:dialog:death1",
+    "namespace": "schematical:dialog:death_1",
     "text": "Arggggg...",
-    "event": "death"
+    "event": "death",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:death_2",
+    "text": "Farewell cruel world...",
+    "event": "death",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:death_3",
+    "text": "You will never take me al...",
+    "event": "death",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:death_4",
+    "text": "I wasted my life...",
+    "event": "death",
+    "type": "human"
   },
   {
     "namespace": "schematical:dialog:attack_receive_1",
     "text": "Ouch!",
-    "event": "attack_receive"
+    "event": "attack_receive",
+    "type": "human"
   },
   {
     "namespace": "schematical:dialog:attack_receive_2",
     "text": "Save me!",
-    "event": "attack_receive"
+    "event": "attack_receive",
+    "type": "human"
   },
   {
     "namespace": "schematical:dialog:attack_receive_3",
     "text": "Tis but a flesh wound!",
-    "event": "attack_receive"
+    "event": "attack_receive",
+    "type": "human"
   },
   {
     "namespace": "schematical:dialog:attack_receive_4",
     "text": "Run awayyyyyy!!",
-    "event": "attack_receive"
+    "event": "attack_receive",
+    "type": "human"
   },
   {
     "namespace": "schematical:dialog:heal1",
     "text": "Ah that feels better!",
-    "event": "heal"
+    "event": "heal",
+    "type": "human"
   },
   {
     "namespace": "schematical:dialog:zombie_moan1",
     "text": "Gaaaarrrhhhhhh....",
-    "event": "zombie_moan"
+    "event": "zombie_moan",
+    "type": "zombie"
+  },
+  {
+    "namespace": "schematical:dialog:attack_give_1",
+    "text": "Take that!",
+    "event": "attack_give",
+    "type": "human"
   }
 ]

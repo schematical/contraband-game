@@ -14,7 +14,6 @@ class Building{
         tile.building = this;
         this.tiles.push(tile);
 
-
     }
     populateNPCs(){
         this.npcs = [];

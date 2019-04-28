@@ -5,6 +5,15 @@ import NPCAttackBehavior from "./NPCAttackBehavior";
 import NPCTaskBehavior from "./NPCTaskBehavior";
 
 class NPCAIManager{
+    filterZombie(potentialTarget){
+        if(potentialTarget.type !== NPC.Type.ZOMBIE){
+            return false;
+        }
+        if(potentialTarget.cover){
+            return false;
+        }
+        return true;
+    }
     setupZombie(npc){
         function filterHumanNotInCover(potentialTarget){
 
@@ -30,17 +39,11 @@ class NPCAIManager{
         }));
     }
     setupCivilian(npc){
+
+
         npc.addAIBehavior(new NPCHuntBehavior({
             priority: 20,
-            filter:function(potentialTarget){
-                if(potentialTarget.type !== NPC.Type.ZOMBIE){
-                    return false;
-                }
-                if(potentialTarget.cover){
-                    return false;
-                }
-                return true;
-            },
+            filter:this.filterZombie,
             shouldFlee:function(target){
                 this.state = NPCHuntBehavior.States.Fleeing;
                 return true;
@@ -51,6 +54,10 @@ class NPCAIManager{
         }));
     }
     setupFactionMember(npc){
+        npc.addAIBehavior(new NPCAttackBehavior({
+            priority: 10,
+            filter:this.filterZombie
+        }));
         npc.addAIBehavior(new NPCTaskBehavior({
             priority: 20
         }));

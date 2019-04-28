@@ -8,7 +8,7 @@ class NPCDialogManager{
             this.events[dialog.event].push(dialog);
         })
     }
-    getEventChat(eventType){
+    getEventChat(eventType, npcType){
         let dialogColl = this.events[eventType];
         if(!dialogColl){
             throw new Error("No valid `dialog` for `event`: " + eventType);

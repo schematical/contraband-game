@@ -33,6 +33,12 @@ class TextureManager{
         }
         return this.cache["NPCZombieObservedDefault"];
     }
+    getNPCZombieObservedDowned(){
+        if(!this.cache["NPCZombieObservedDowned"]){
+            return this.cache["NPCZombieObservedDowned"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#448844", 255);
+        }
+        return this.cache["NPCZombieObservedDowned"];
+    }
     getNPCCivilianObservedDefault(){
         if(!this.cache["NPCCivilianObservedDefault"]){
             return this.cache["NPCCivilianObservedDefault"] =  this.generateSquare(NPC_SIZE, NPC_SIZE, "#666666", 255);

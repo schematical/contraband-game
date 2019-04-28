@@ -46,10 +46,7 @@ class NPCAttackBehavior extends NPCBehavior{
     }
     execute(){
         this.state = "Attacking";
-        this.target.addInteraction({
-            type:"attack",
-            damage: 50
-        })
+        this.npc.attackNPC(this.target);
 
     }
 

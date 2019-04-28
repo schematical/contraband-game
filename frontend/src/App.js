@@ -54,6 +54,7 @@ class App extends Component {
         this._npcId = 0;
         this.gui = {};
         this.tickCounters = [];
+        this.visibleNPCs = [];
 
 
     }
@@ -152,6 +153,8 @@ class App extends Component {
 
         this.populateStartTeam();
         this.refreshFactionLotStates();
+        this.map.refreshLotVisibility(this.pixicontainer);
+        this.refreshVisibleNPCS();
         this.map.render( this.pixicontainer );
 
 
@@ -179,8 +182,13 @@ class App extends Component {
 
 
 
-            this.npcs.forEach((npc)=>{
-                if(!npc.lot || npc.cover || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
+            this.visibleNPCs.forEach((npc)=>{
+                if(
+                    !npc.lot ||
+                    npc.cover ||
+                    npc.isDead() ||
+                    !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)
+                ){
                     return;
                 }
                 npc.tickPhysics(app.ticker.elapsedMS);
@@ -188,8 +196,13 @@ class App extends Component {
             })
         }else if(newState.ticksSinceNPCAI > 1000){
             this.state.ticksSinceNPCAI = 0;
-            this.npcs.forEach((npc)=>{
-                if(!npc.lot || npc.cover || !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)){
+            this.visibleNPCs.forEach((npc)=>{
+                if(
+                    !npc.lot ||
+                    npc.cover ||
+                    npc.isDead() ||
+                    !npc.lot.getFactionLotState(this.playerFaction, Lot.States.OBSERVED)
+                ){
                     return;
                 }
                 if(npc.name){
@@ -305,14 +318,30 @@ class App extends Component {
             .wheel()
             .decelerate();
 
-        let i =-1 * window.innerWidth;
-        //alert(i);
+        this.pixicontainer.on("drag-end", ()=>{
+            this.map.refreshLotVisibility(this.pixicontainer);
+            this.refreshVisibleNPCS();
+        })
 
         this.pixicontainer.fitWorld(true);//zoom(i);//-1028);
 
-
-
     }
+
+    refreshVisibleNPCS(){
+        this.visibleNPCs = [];
+        this.map.each((lot)=>{
+            if(!lot.visible){
+                return;
+            }
+            lot.npcs.forEach((npc)=>{
+                if(npc.cover){
+                    return;
+                }
+                this.visibleNPCs.push(npc);
+            })
+        })
+    }
+
     addNPC(data){
         data.app = this;
         data.id = this._npcId++;

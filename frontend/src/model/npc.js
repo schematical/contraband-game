@@ -66,6 +66,7 @@ class NPC{
         let stats = this.app.registry.npc_stats.list();
         this.stats = {};
         let _this = this;
+        let shortKeys = [];
         Object.keys(stats).forEach((namespace)=>{
             if(!_.isUndefined(this._stats[namespace])){
                 return;
@@ -80,7 +81,7 @@ class NPC{
             }
             this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
 
-
+            shortKeys.push(stats[namespace].shortNamespace);
             Object.defineProperty( this.stats, stats[namespace].shortNamespace, {
                 get: function() {
                     console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
@@ -88,6 +89,9 @@ class NPC{
                 }
             });
         })
+        this.stats.getKeys = ()=>{
+            return shortKeys;
+        }
     }
     populateRandom(){
 
@@ -110,8 +114,11 @@ class NPC{
                 texture = this.lot.app.textureManager.getNPCRecentlyDeceasedObservedDefault();
             break;
             case(NPC.Type.ZOMBIE):
-                texture = this.lot.app.textureManager.getNPCZombieObservedDefault();
-
+                if(this.stats.health > 0) {
+                    texture = this.lot.app.textureManager.getNPCZombieObservedDefault();
+                }else {
+                    texture = this.lot.app.textureManager.getNPCZombieObservedDowned();
+                }
             break;
             case(NPC.Type.HUMAN):
                 if(this.faction) {//TODO: Check if its the players faction
@@ -217,11 +224,15 @@ class NPC{
         }
 
     }
-    /*tick(){
-        this.tickAI();
-        this.tickPhysics();
-        this.tickBiology();
-    }*/
+    attackNPC(target){
+        target.addInteraction({
+            type:"attack",
+            damage: 50,
+            attacker: this
+        })
+        this.rndCaptionFromCollection("attack_give");
+
+    }
     tickBiology(deltaMS){
 
         //Cause hunger
@@ -233,8 +244,7 @@ class NPC{
             switch(interaction.type){
                 case("attack")://TODO: Enum
                     this._stats["schematical:npc_stats:health"] -= interaction.damage;//TODO: Apply defence and armor and stuff
-                    console.log("Taking Damage: ", this._stats["schematical:npc_stats:health"], interaction.damage, this.stats.health);
-                    this.setCaption(this.app.dialogManager.getEventChat("attack_receive").text);
+                    this.rndCaptionFromCollection("attack_receive");
 
                     break;
                 default:
@@ -247,27 +257,41 @@ class NPC{
         //Check if dead:
 
         if(this._stats["schematical:npc_stats:health"] <= 0){
-            if(this.type == NPC.Type.HUMAN ) {
-                this.type = NPC.Type.RECENTLY_DECEASED;
-                this.app.addCountDown(
-                    10000,
-                    ()=>{
-                        this._stats["schematical:npc_stats:health"] = 100;
-                        this.type = NPC.Type.ZOMBIE;
-                        this.faction = null;
-                        this.clearAIBehaviors();
-                        this.app.aiManager.setupZombie(this);
-                        this.render();
-                        this.setCaption(this.app.dialogManager.getEventChat("zombie_moan").text);
-                    }
-                );
+            switch(this.type) {
+                case(NPC.Type.HUMAN):
+                    this.type = NPC.Type.RECENTLY_DECEASED;
+                    this.app.addCountDown(
+                        10000,
+                        () => {
+                            this._stats["schematical:npc_stats:health"] = 100;
+                            this.type = NPC.Type.ZOMBIE;
+                            this.faction = null;
+                            this.clearAIBehaviors();
+                            this.app.aiManager.setupZombie(this);
+                            this.render();
+                            this.setCaption(this.app.dialogManager.getEventChat("zombie_moan").text);
+                        }
+                    );
 
-                this.velocity = {
-                    x: 0,
-                    y: 0
-                }
-                this.render();
+
+                break;
+                case(NPC.Type.ZOMBIE):
+                    this.app.addCountDown(
+                        5000,
+                        () => {
+                            this.sleep();
+                            this.destroy();
+                        }
+                    );
+                break;
             }
+            this.velocity = {
+                x: 0,
+                y: 0
+            }
+            this.render();
+            this.alive = false;
+
         }
 
 
@@ -421,7 +445,7 @@ class NPC{
         return nVec;
     }
     isDead(){
-        return !this.isAlive;
+        return !this.alive;
     }
 
     setCaption(text){
@@ -444,6 +468,12 @@ class NPC{
         })
 
 
+    }
+    rndCaptionFromCollection(event){
+        if(this.app.rnd() * 5 > 1){
+            return;
+        }
+        this.setCaption(this.app.dialogManager.getEventChat(event).text);
     }
 
 

@@ -23,12 +23,12 @@ class NPCDetailComponent extends Component {
                 </a>
               </li>
             }
-            { Object.keys(this.npc.stats).map((statNamespace, index) => {
+            { this.npc.stats.getKeys().map((shortNamespace, index) => {
               return <li>
                   <a href="#file-structure">
                     <i className="icon-chevron-right"></i>
 
-                    {this.app.registry.npc_stats.get(statNamespace).name} {this.npc.stats[statNamespace]}
+                    {shortNamespace} {this.npc.stats[shortNamespace]}
                   </a>
                 </li>
             })}
