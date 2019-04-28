@@ -52,6 +52,12 @@ class NPCDetailComponent extends Component {
                 Explore
               </a>
             </li>
+            <li className="nav-header">Debug</li>
+            <li>
+              <a href="#file-structure">
+                Task Queue Length: {this.npc.tasks.length}
+              </a>
+            </li>
           </ul>
         </div>
     );

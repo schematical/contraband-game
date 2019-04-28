@@ -27,7 +27,7 @@ class NPCHuntBehavior extends NPCBehavior{
         //Find a target
         let targets = [];
         this.npc.lot.npcs.forEach((npc)=>{
-            if(this.npc.cover){
+            if(npc.cover){
                 return;
             }
             if(!this.filter(npc)){
@@ -38,17 +38,18 @@ class NPCHuntBehavior extends NPCBehavior{
         if(targets.length == 0){
             return false;
         }
-        if(targets.length > 1){
-            targets = _.sortBy(targets, (target)=>{
-                return this.npc.distTo(target);
-            })
-        }
+
+        targets = _.sortBy(targets, (target)=>{
+            return this.npc.distTo(target);
+        })
+
         this.target = targets[0];
         return true;
 
     }
     continueExecuting(){
-        if(!this.target){
+        return false;
+        /*if(!this.target){
             return false;
         }
         if(this.target.isDead()){
@@ -59,7 +60,7 @@ class NPCHuntBehavior extends NPCBehavior{
             this.target = null;
             return false;
         }
-        return true;
+        return true;*/
     }
     execute(){
         this.state = NPCHuntBehavior.States.Hunting;

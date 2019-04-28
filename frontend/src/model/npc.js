@@ -24,8 +24,9 @@ class NPC{
         this.tasks = [];
         this.interactions = [];
         this._debug = [];
-
+        this.activeBehavior = null;
         this.statusEffects = [];
+        this.mission = null;
 
         _.extend(this, data);
         this.eventEmitter = new events.EventEmitter();
@@ -98,10 +99,10 @@ class NPC{
             }
             this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
 
-            //console.log("stats[namespace].shortNamespace", stats[namespace].shortNamespace)
+
             Object.defineProperty( this.stats, stats[namespace].shortNamespace , {
                 get: function() {
-                    console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
+
                     return _this._stats[namespace];
                 }
             });
@@ -250,6 +251,16 @@ class NPC{
 
         //Check for walls?
         let destLot = this.app.map.get(this.lot.x + x, this.lot.y + y, {autoGen: false});
+        if(this.mission ){
+
+            if(this.mission.canEnterLot){
+                console.log("this.mission", this.mission);
+                if(!this.mission.canEnterLot(this, destLot)){
+                    return false;
+                }
+            }
+        }
+
         if (this.faction && this.type == NPC.Type.HUMAN) {//<--- Zombies dont follow the rules
             if(!destLot.getFactionLotState(this.faction, Lot.States.ALLOWED)){
                 return false;
@@ -299,9 +310,10 @@ class NPC{
 
     }
     attackNPC(target){
+        console.log("ATTACK TARGET");
         target.addInteraction({
             type:"attack",
-            damage: 50,
+            damage: 10,
             attacker: this
         })
         this.rndCaptionFromCollection("attack_give");
@@ -441,11 +453,15 @@ class NPC{
         if(this.type == NPC.Type.RECENTLY_DECEASED){
             return;
         }
-        if(this.activeBehavior){
+
+        if(!_.isNull(this.activeBehavior)){
             if(this.activeBehavior.continueExecuting()){
                 this.activeBehavior.execute();
+
                 return;
             }else{
+
+
                 this.activeBehavior = null;
             }
 
@@ -457,11 +473,11 @@ class NPC{
         ){
 
             let behavior = this.behaviors[index];
-            if(this.name){
 
-            }
+
             if(behavior.shouldExecute()){
                 this.activeBehavior = behavior;
+                //console.log(this.name || this.type, this.activeBehavior)
             }
             index++;
         }

@@ -223,7 +223,7 @@ class App extends Component {
                     return;
                 }
                 if(npc.name){
-                    console.log("Ticking..." + npc.name)
+                    //console.log("Ticking..." + npc.name)
                 }
                 npc.tickAI(app.ticker.elapsedMS);
                 npc.tickBiology(app.ticker.elapsedMS);

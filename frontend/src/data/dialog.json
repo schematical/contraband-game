@@ -132,6 +132,24 @@
     "type": "human"
   },
   {
+    "namespace": "schematical:dialog:mission1a_5",
+    "text": "Remember that time you got your hand stuck in the vending machine?",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1a_6",
+    "text": "Who else is in the mood for indian food?",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1a_7",
+    "text": "I saw this really good special on the animal planet",
+    "event": "mission1a",
+    "type": "human"
+  },
+  {
     "namespace": "schematical:dialog:mission1b_1",
     "text": "That dude has had a few too many",
     "event": "mission1b",
