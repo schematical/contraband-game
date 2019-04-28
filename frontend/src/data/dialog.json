@@ -48,6 +48,24 @@
     "type": "human"
   },
   {
+    "namespace": "schematical:dialog:dehydrated_1",
+    "text": "So thirsty...",
+    "event": "dehydrated",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:well_hydrated_1",
+    "text": "I gotta pee",
+    "event": "well_hydrated",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:dehydrated_injury_1",
+    "text": "I am literally dieing of thirst",
+    "event": "dehydrated_injury",
+    "type": "human"
+  },,
+  {
     "namespace": "schematical:dialog:heal1",
     "text": "Ah that feels better!",
     "event": "heal",

@@ -134,9 +134,10 @@ class TextureManager{
         if(!this.cache["TextStyle"]) {
             this.cache["TextStyle"] = new PIXI.TextStyle({
                 fontFamily: 'DOS',
-                fontSize: 8,
+                fontSize: 24,
                 fontWeight: 'bold',
                 fill: '#ffffff',
+                align: 'center',
                 //stroke: '#4a1850',
                 //strokeThickness: 5,
 
@@ -147,8 +148,8 @@ class TextureManager{
                 dropShadowDistance: 6,*/
 
 
-                //wordWrap: true,
-                wordWrapWidth: 440,
+                wordWrap: true,
+                wordWrapWidth: 200,
             });
         }
         return this.cache["TextStyle"];

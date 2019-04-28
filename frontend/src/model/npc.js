@@ -80,7 +80,7 @@ class NPC{
         _.extend(options, _options)
         //Iterate through all stats
         let stats = this.app.registry.npc_stats.list();
-        this.stats = {};
+        this.stats = this.stats || {};
         let _this = this;
         let shortKeys = [];
         Object.keys(stats).forEach((namespace)=>{
@@ -98,10 +98,10 @@ class NPC{
             }
             this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
 
-
-            Object.defineProperty( this.stats, stats[namespace].shortNamespace, {
+            console.log("stats[namespace].shortNamespace", stats[namespace].shortNamespace)
+            Object.defineProperty( this.stats, stats[namespace].shortNamespace , {
                 get: function() {
-                    //console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
+                    console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
                     return _this._stats[namespace];
                 }
             });
@@ -396,7 +396,7 @@ class NPC{
                 break;
                 case(NPC.Type.ZOMBIE):
                     this.app.addCountDown(
-                        5000,
+                        15000,
                         () => {
                             this.app.sleepNPC(this);
                             this.destroy();
@@ -508,6 +508,12 @@ class NPC{
         }
         this.sprite.x = this.lotPos.x * 16;
         this.sprite.y = this.lotPos.y * 16;
+
+        if(this.captionSprite){
+            let screenPos = this.app.pixicontainer.toScreen(this.sprite.x, this.sprite.y);
+            this.captionSprite.x = screenPos.x;
+            this.captionSprite.y = screenPos.y;
+        }
     }
     guiDeselect(){
 
@@ -577,10 +583,13 @@ class NPC{
                 text,
                 this.app.textureManager.getTextStyle()
             );
-            richText.x = 0;
+            richText.width = 200;
+            richText.pivot.x = 100;
+            richText.pivot.y = 10;
+            richText.x = -100;
             richText.y = -10;
             this.captionSprite = richText;
-            this.sprite.addChild( this.captionSprite);
+            this.app.textcontainer.addChild( this.captionSprite);
         }else{
             this.captionSprite.text = text;
         }
@@ -601,7 +610,7 @@ class NPC{
         }else{
             text = this.app.dialogManager.getEventChat(event).text;
         }
-        this.setCaption();
+        this.setCaption(text);
     }
 
 

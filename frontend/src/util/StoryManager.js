@@ -76,6 +76,10 @@ class StoryManager{
                     {
                         _done: false,
                         onStart:()=>{
+                            this.app.pixicontainer.snapZoom({
+                                width: 128,
+                                height: 128
+                            });
                             this.app.addCountDown(10000, ()=>{
                                 this._done = true;
 

@@ -290,6 +290,7 @@ class App extends Component {
         /*      this.pixi.view.addEventListener('contextmenu', (e) => {
                   e.preventDefault();
               });*/
+
         this.pixicontainer =  new Viewport({
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
@@ -301,7 +302,8 @@ class App extends Component {
 
         this.pixi.stage.addChild(this.pixicontainer);
 
-
+        this.textcontainer = new PIXI.Container();
+        this.pixi.stage.addChild(this.textcontainer);
 
 
 
@@ -310,8 +312,8 @@ class App extends Component {
         this.pixicontainer.y = this.pixi.screen.height / 2;
 
 // Center bunny sprite in local container coordinates
-        this.pixicontainer.pivot.x = this.pixicontainer.width / 2;
-        this.pixicontainer.pivot.y = this.pixicontainer.height / 2;
+        this.pixicontainer.pivot.x = this.pixicontainer.width / 2 + 32;
+        this.pixicontainer.pivot.y = this.pixicontainer.height / 2 + 32;
 
 
 
