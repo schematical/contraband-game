@@ -27,13 +27,49 @@
   {
     "namespace": "schematical:npc_stats:food_consumption_rate",
     "name": "food consumption rate",
-    "startValue": 3
+    "startValue": 1,
+    "affected_stat": "schematical:npc_stats:hunger"
+
+
+  },
+  {
+    "namespace": "schematical:npc_stats:hunger",
+    "name": "hunger",
+    "startValue": 100
 
   },
   {
     "namespace": "schematical:npc_stats:water_consumption_rate",
     "name": "food consumption rate",
-    "startValue": 8
+    "startValue": 3,
+    "affected_stat": "schematical:npc_stats:thirst"
+
+  },
+  {
+    "namespace": "schematical:npc_stats:thirst",
+    "name": "thirst",
+    "startValue": 100,
+    "triggers": [
+      {
+        "min": 90,
+        "max": 100,
+        "desc": "Well hydrated"
+      },
+      {
+        "min": 1,
+        "max": 10,
+        "desc": "Dehydrated"
+      },
+      {
+        "min": -1,
+        "max": 1,
+        "desc": "Dieing of thirst",
+        "effect": {
+          "stat": "schmatical:npc_stats:health",
+          "value": -1
+        }
+      }
+    ]
   },
   {
     "namespace": "schematical:npc_stats:reputation",

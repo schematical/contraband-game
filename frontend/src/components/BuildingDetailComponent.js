@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import NPCListComponent from "./NPCListComponent";
+import Lot from "../model/lot";
+import NPCMoveTask from "../model/ai/NPCMoveTask";
 
 
 class BuildingDetailComponent extends Component {
   constructor(props){
     super(props);
-
+    this.promptActionEnter = this.promptActionEnter.bind(this);
   }
   render() {
     return (
@@ -17,7 +19,11 @@ class BuildingDetailComponent extends Component {
               </a>
             </li>
             <li className="nav-header">NPCs</li>
-            <NPCListComponent npcs={this.props.building.npcs} app={this.props.app} />
+            {this.props.building.lot.getFactionLotState(this.props.app.playerFaction, Lot.States.EXPLORED) ?
+                <NPCListComponent npcs={this.props.building.npcs} app={this.props.app}/>
+                :
+                <span>Unexplored...</span>
+            }
             <li className="nav-header">Materials</li>
             <li>
               <a href="#file-structure">
@@ -52,16 +58,29 @@ class BuildingDetailComponent extends Component {
 
             <li className="nav-header">Actions</li>
             <li>
-              <a href="#file-structure">
-                Clear
+              <a href="#file-structure" onClick={this.promptActionEnter}>
+                Enter
               </a>
             </li>
           </ul>
         </div>
     );
   }
-  onClick(event){
+  promptActionEnter(event){
 
+    this.props.app.guiPromptTask({
+      onComplete:()=>{
+        console.log("DONE");
+        this.props.building.lot.setFactionLotState(this.props.app.playerFaction, Lot.States.ALLOWED, true);
+      },
+      taskConstructor:(npc)=>{
+        let task = new NPCMoveTask({
+          lot:this.props.building.lot,
+          building: this.props.building
+        })
+        return task;
+      }
+    });
   }
 
 }

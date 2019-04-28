@@ -16,6 +16,7 @@ class NPCDetailComponent extends Component {
               {this.npc.name || this.npc.type}
               </a>
             </li>
+            <li className="nav-header">Info</li>
             {this.npc.occupation &&
               <li>
                 <a data-title={this.npc.occupation.name} data-content={this.npc.occupation.notes}>
@@ -32,6 +33,19 @@ class NPCDetailComponent extends Component {
                   </a>
                 </li>
             })}
+            {
+              this.npc.statusEffects.length > 0 &&
+                  <div>
+                    <li className="nav-header">Info</li>
+                    {this.npc.statusEffects.map((statusEffect, index) => {
+                    return <li>
+                    <a href="#file-structure">
+                      {statusEffect.desc}
+                    </a>
+                    </li>
+                  })}
+                  </div>
+            }
             <li className="nav-header">Actions</li>
             <li>
               <a href="#file-structure">

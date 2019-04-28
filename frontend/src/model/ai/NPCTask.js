@@ -12,9 +12,7 @@ class NPCTask{
     markCompleted() {
         this._completed = true;
         this.npc.currentTask = null;
-        this.npc.tasks = _.reject(this.npc.tasks, (_task) => {
-            return this.taskId == _task.taskId;
-        })
+        this.npc.removeTask(this);
     }
 
 }

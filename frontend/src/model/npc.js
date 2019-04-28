@@ -23,8 +23,9 @@ class NPC{
         this.alive = true;
         this.tasks = [];
         this.interactions = [];
+        this._debug = [];
 
-
+        this.statusEffects = [];
 
         _.extend(this, data);
         this.eventEmitter = new events.EventEmitter();
@@ -33,11 +34,26 @@ class NPC{
 
 
     }
+    debugLog(data){
+        if(!_.isString(data)){
+            data = JSON.stringify(data, null , 3);
+        }
+        this._debug.push(data);
+    }
     addTask(task){
         task.npc = this;
         this.tasks.push(task);
         this.tasks = _.sortBy(this.tasks, (task)=>{
             return task.priority || 100;
+        })
+        if(this.cover){
+            this.tickAI();
+            this.tickPhysics();
+        }
+    }
+    removeTask(task){
+        this.tasks = _.reject(this.tasks, (_task) => {
+            return task.taskId == _task.taskId;
         })
     }
 
@@ -68,6 +84,7 @@ class NPC{
         let _this = this;
         let shortKeys = [];
         Object.keys(stats).forEach((namespace)=>{
+            shortKeys.push(stats[namespace].shortNamespace);
             if(!_.isUndefined(this._stats[namespace])){
                 return;
             }
@@ -81,10 +98,10 @@ class NPC{
             }
             this._stats[namespace] = this.app.registry.range(stats[namespace], "startRange", stats[namespace].startValue);
 
-            shortKeys.push(stats[namespace].shortNamespace);
+
             Object.defineProperty( this.stats, stats[namespace].shortNamespace, {
                 get: function() {
-                    console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
+                    //console.log("GETTING: ", stats[namespace].shortNamespace, namespace, _this._stats[namespace]);
                     return _this._stats[namespace];
                 }
             });
@@ -99,6 +116,63 @@ class NPC{
         this.name += names[Math.floor(Math.random() * names.length)].substr(0,1) + '.';
         this.occupation  = this.app.registry.occupations.rnd();
 
+    }
+    attemptEgress(){
+        if(!this.cover){
+            throw new Error("Attempting to exit a building while not already in cover");
+        }
+        //TODO: Check Egress speed and fortification, etc
+        if(this.cover.ingressTiles.length == 0){
+            throw new Error("No `ingressTile` found");
+        }
+        this.lotPos = {
+            x:this.cover.ingressTiles[0].x + .125,
+            y: this.cover.ingressTiles[0].y + .275
+        }
+
+        this.cover.removeNPC(this);
+        this.cover.lot.addNPC(this);
+        this.cover = null;
+
+        this.app.addNPCVisible(this);
+        this.sprite.visible = true;
+
+        return true;
+    }
+    attemptIngress(building){
+        if(this.cover){
+            throw new Error("Attempting to enter a building while already in cover");
+        }
+        if(
+            building.lot.x != this.lot.x ||
+            building.lot.y != this.lot.y
+        ){
+            throw new Error("NPC is not in the same `lot` as the `building` it is trying to enter");
+        }
+
+        if(building.ingressTiles.length == 0){
+            throw new Error("No `ingressTile` found");
+        }
+        let i = 0;
+        let canEnter = false;
+        while(i < building.ingressTiles.length) {
+            let dist = this.distTo(building.ingressTiles[0]);
+            if (dist < .25) {
+                canEnter = true;
+            }
+            i++;
+        }
+        if(!canEnter){
+            //You are too far away
+            return false;
+        }
+        //TODO: Check Ingress speed and fortification, etc
+        this.lot.removeNPC(this);
+        this.cover = building;
+        building.npcs.push(this);
+        this.app.removeNPCVisible(this);
+        this.sprite.visible = false;
+        return true;
     }
     render(container, _options){
         let options = {
@@ -233,6 +307,48 @@ class NPC{
         this.rndCaptionFromCollection("attack_give");
 
     }
+    tickSimple(){
+        //
+        //console.log("Simple Tick: " + (this.name || (this.type + this.id)));
+
+        this.tickSimpleBiology();
+        if(this.cover){
+            return;
+        }
+        //TODO: Tick simple AI
+    }
+    tickSimpleBiology(){
+        this.statusEffects = [];
+        Object.keys(this._stats).forEach((namespace)=>{
+            let regData = this.app.registry.npc_stats.get(namespace);
+            let stat = this._stats[namespace];
+            if(regData.affected_stat){
+                if(_.isUndefined(this._stats[regData.affected_stat])){
+                    throw new Error("Missing `affected_stat` `" + regData.affected_stat + "` in stat `" + namespace + "`");
+                }
+                this._stats[regData.affected_stat] -= stat;
+            }
+            if(regData.triggers){
+                regData.triggers.forEach((trigger)=>{
+                    if(
+                        stat > trigger.min &&
+                        stat < trigger.max
+                    ){
+                        //Trigger effect
+                        this.statusEffects.push(_.clone(trigger));
+                        if(trigger.effect){
+                            if(trigger.effect.stat){
+                                if(_.isUndefined(this._stats[trigger.effect.stat])){
+                                    throw new Error("Missing `affected_stat` `" + trigger.effect.stat + "` in stat `" + namespace + "`");
+                                }
+                                this._stats[trigger.effect.stat] += trigger.effect.value;
+                            }
+                        }
+                    }
+                })
+            }
+        })
+    }
     tickBiology(deltaMS){
 
         //Cause hunger
@@ -252,6 +368,9 @@ class NPC{
             }
         })
         this.interactions = [];
+        //Iterate through stats and find out which ones are dependant on each other
+
+
 
         //Check resulting stats
         //Check if dead:
@@ -279,7 +398,7 @@ class NPC{
                     this.app.addCountDown(
                         5000,
                         () => {
-                            this.sleep();
+                            this.app.sleepNPC(this);
                             this.destroy();
                         }
                     );
@@ -470,9 +589,9 @@ class NPC{
 
     }
     rndCaptionFromCollection(event){
-        if(this.app.rnd() * 5 > 1){
+        /*if(this.app.rnd() * 5 > 1){
             return;
-        }
+        }*/
         this.setCaption(this.app.dialogManager.getEventChat(event).text);
     }
 

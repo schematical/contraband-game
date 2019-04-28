@@ -6,7 +6,9 @@ class NPCListComponent extends Component {
     super(props);
     this.setupOnClick = this.setupOnClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
-
+    this.props.npcs.forEach((npc)=>{
+      npc._selected = true;
+    })
   }
 
   handleChange(event) {
@@ -36,7 +38,7 @@ class NPCListComponent extends Component {
           {this.props.npcs.map((npc, index2) => {
             return  <tr className="success">
                   <td>
-                    <input  type="checkbox" value={npc} onChange={(event)=>{
+                    <input  type="checkbox" value={npc._selected} onChange={(event)=>{
                       npc._selected = event.target.value;
                     }} />
                   </td>

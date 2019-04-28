@@ -170,7 +170,7 @@ class App extends Component {
             ticksSinceNPCAI: this.state.ticksSinceNPCAI + app.ticker.elapsedMS
         };
         if(newState.ticksSinceLastCycle  > 10000){
-            this.startCycle();
+            this.tickSimple();
             newState.ticksSinceLastCycle = 0;
         }
         this.setState(newState);
@@ -215,8 +215,11 @@ class App extends Component {
         }
 
     }
-    startCycle(){
+    tickSimple(){
         this.setState({cycleCount: this.state.cycleCount + 1});
+        this.map.each((lot)=>{
+            lot.tickSimple();
+        })
     }
     populateStartTeam(){
         //TODO: Pormpt player name
@@ -358,6 +361,15 @@ class App extends Component {
         npc.lot.removeNPC(npc)
         npc.sleep();
     }
+    addNPCVisible(npc){
+        this.visibleNPCs.push(npc);
+    }
+    removeNPCVisible(npc){
+        this.visibleNPCs = _.reject(this.visibleNPCs, (_npc)=>{
+            return npc.id == _npc.id;
+        })
+    }
+
     selectTile(lot){
         this.guiClearSelection();
         this.setState({selected_lot: lot});
@@ -391,7 +403,7 @@ class App extends Component {
 
     }
     guiPromptTask(options){
-
+        console.log("Prompting...")
         this.gui.taskAssignmentComponent.show(options)
     }
     getNPCsByFaction(faction){

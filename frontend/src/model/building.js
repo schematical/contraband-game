@@ -43,10 +43,22 @@ class Building{
 
 
     }
+    tickSimple(){
+        this.npcs.forEach((npc)=>{
+            npc.tickSimple();
+        })
+    }
     guiDeselect(){
 
     }
     guiSelect(){
+
+    }
+    removeNPC(npc){
+
+        this.npcs = _.reject(this.npcs, (_npc)=>{
+            return npc.id == _npc.id;
+        })
 
     }
 

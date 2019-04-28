@@ -41,6 +41,12 @@ class Tile{
 
 
     }
+    getGlobalPos(){
+        return {
+            x: this.lot.x + (this.x / 4),
+            y: this.lot.y + (this.y / 4)
+        }
+    }
    /* onPointerDown(){
         this.lot.app.setState({selected_building: this.building});
     }

@@ -231,6 +231,17 @@ class Lot{
         building.populateNPCs();
         this.buildings.push(building);
     }
+    tickSimple(){
+        this.buildings.forEach((building)=>{
+            building.tickSimple();
+        })
+
+        this.npcs.forEach((npc)=>{
+
+            npc.tickSimple();
+
+        })
+    }
     render(container,  _options){
         let options = {
             refresh: false
@@ -318,6 +329,7 @@ class Lot{
         this.sprite.texture = texture;
 
     }
+
     guiDeselect(){
         if(this.getFactionLotState(this.app.playerFaction, Lot.States.OBSERVED)) {
             this.sprite.texture = this.app.textureManager.getLotObservedDefault();
@@ -334,6 +346,35 @@ class Lot{
             return npc.id == _npc.id;
         })
 
+    }
+    vecTo(npc){
+        let myPos = this.getGlobalPos();
+        let theirPos = npc.getGlobalPos();
+        return {
+            x: theirPos.x - myPos.x ,
+            y: theirPos.y -  myPos.y
+        }
+    }
+    normalizedVectorTo(npc){
+        let vec = this.vecTo(npc);
+        let nVec = {};
+        if(vec.x > 0){
+            nVec.x = 1;
+        }else if(vec.x < 0){
+            nVec.x = -1;
+        }else{
+            nVec.x = 0;
+        }
+
+
+        if(vec.y > 0){
+            nVec.y = 1;
+        }else if(vec.y < 0){
+            nVec.y = -1;
+        }else{
+            nVec.y = 0;
+        }
+        return nVec;
     }
 
 
