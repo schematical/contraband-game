@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 import  names from '../data/names';
 import Lot from "./lot";
 import events from 'events';
+import Building from "./building";
 
 // Create an eventEmitter object
 class NPC{
@@ -127,16 +128,33 @@ class NPC{
             throw new Error("No `ingressTile` found");
         }
         this.lotPos = {
-            x:this.cover.ingressTiles[0].x + .125,
-            y: this.cover.ingressTiles[0].y + .275
+            x:this.cover.ingressTiles[0].x + 0,
+            y: this.cover.ingressTiles[0].y + 1
         }
 
         this.cover.removeNPC(this);
         this.cover.lot.addNPC(this);
+
+        if(this.faction) {
+            let occupiedByFaction = false;
+
+            this.cover.npcs.forEach((npc)=>{
+                if(
+                    npc.faction &&
+                    npc.faction.namespace == this.faction.namespace
+                ){
+                    occupiedByFaction = true;
+                }
+            })
+
+            this.cover.setFactionLotState(this.faction, Building.States.OCCUPIED, occupiedByFaction);
+        }
+
         this.cover = null;
 
         this.app.addNPCVisible(this);
         this.sprite.visible = true;
+
 
         return true;
     }
@@ -154,25 +172,37 @@ class NPC{
         if(building.ingressTiles.length == 0){
             throw new Error("No `ingressTile` found");
         }
-        let i = 0;
-        let canEnter = false;
-        while(i < building.ingressTiles.length) {
-            let dist = this.distTo(building.ingressTiles[0]);
-            if (dist < .25) {
-                canEnter = true;
+        if(!this.collisionBuilding) {
+
+            let i = 0;
+            let canEnter = false;
+            while (i < building.tiles.length) {
+                let dist = this.distTo(building.tiles[0]);
+                if (dist < .25) {
+                    canEnter = true;
+                }
+                i++;
             }
-            i++;
+            if (!canEnter) {
+                //You are too far away
+                return false;
+            }
+        }else{
+            if(this.collisionBuilding.id != building.id){
+                return false;
+            }
         }
-        if(!canEnter){
-            //You are too far away
-            return false;
-        }
+
+
         //TODO: Check Ingress speed and fortification, etc
         this.lot.removeNPC(this);
         this.cover = building;
         building.npcs.push(this);
         this.app.removeNPCVisible(this);
         this.sprite.visible = false;
+        if(this.faction) {
+            building.setFactionLotState(this.faction, Building.States.OCCUPIED, true);
+        }
         return true;
     }
     render(container, _options){
@@ -235,8 +265,10 @@ class NPC{
         }
 
     }
-    onPointerDown(){
-        this.lot.app.setState({selected_npc: this});
+    onPointerDown(e){
+        //e.data._npc = this;
+        e.stopPropagation();
+        this.lot.app.guiSelectNPC(this);
     }
     onPointerOver(){
         let debugText = this.type + "(" + this.lotPos.x + ", " + this.lotPos.y + ")";
@@ -254,7 +286,7 @@ class NPC{
         if(this.mission ){
 
             if(this.mission.canEnterLot){
-                console.log("this.mission", this.mission);
+
                 if(!this.mission.canEnterLot(this, destLot)){
                     return false;
                 }
@@ -310,7 +342,7 @@ class NPC{
 
     }
     attackNPC(target){
-        console.log("ATTACK TARGET");
+
         target.addInteraction({
             type:"attack",
             damage: 10,
@@ -320,8 +352,7 @@ class NPC{
 
     }
     tickSimple(){
-        //
-        //console.log("Simple Tick: " + (this.name || (this.type + this.id)));
+
 
         this.tickSimpleBiology();
         if(this.cover){
@@ -376,11 +407,12 @@ class NPC{
                     for(let i = 0; i < 3; i++){
                         let texture = this.app.textureManager.getNPCHumanDamageFluid(255);
                         let sprite = new PIXI.Sprite(texture);
-                        let PARTICLE_SIZE = 1
-                        sprite.width = PARTICLE_SIZE;
-                        sprite.height = PARTICLE_SIZE;
-                        sprite.x  = this.sprite.x + (Math.random() * 4 - 2) * PARTICLE_SIZE;
-                        sprite.y = this.sprite.y + (Math.random() * 4 - 2) * PARTICLE_SIZE;
+
+                        sprite.width = this.app.Enum.PARTICLE_SIZE;
+                        sprite.height = this.app.Enum.PARTICLE_SIZE;
+                        let pos = this.getGlobalPos();
+                        sprite.x  = (pos.x * this.app.Enum.LOT_WIDTH)+ (Math.random() * 4 - 2) * this.app.Enum.PARTICLE_SIZE;
+                        sprite.y = (pos.y * this.app.Enum.LOT_WIDTH) + (Math.random() * 4 - 2) * this.app.Enum.PARTICLE_SIZE;
                         let _this = this;
                         this.app.addOtherTickable({
                             sprite: sprite,
@@ -477,7 +509,7 @@ class NPC{
 
             if(behavior.shouldExecute()){
                 this.activeBehavior = behavior;
-                //console.log(this.name || this.type, this.activeBehavior)
+
             }
             index++;
         }
@@ -526,9 +558,11 @@ class NPC{
         let tile = this.lot.getTile(Math.floor(this.goalLotPos.x), Math.floor(this.goalLotPos.y));
         if(tile){
             //There is a building there.
+            this.collisionBuilding = tile.building;
             return this.changeVelocity();
 
         }
+        this.collisionBuilding = null;
         this.lotPos = this.goalLotPos;
         this.goalLotPos = null;
         this.updateScreenPos();
@@ -544,11 +578,13 @@ class NPC{
         if(!this.sprite){
             return;
         }
-        this.sprite.x = this.lotPos.x * 16;
-        this.sprite.y = this.lotPos.y * 16;
 
-        if(this.captionSprite){
-            let screenPos = this.app.pixicontainer.toScreen(this.sprite.x, this.sprite.y);
+        this.sprite.x = this.lotPos.x * this.app.Enum.TILE_WIDTH;
+        this.sprite.y = this.lotPos.y * this.app.Enum.TILE_WIDTH;
+
+        if(this.captionSprite && this.captionSprite.visible){
+            let pos = this.getGlobalPos();
+            let screenPos = this.app.pixicontainer.toScreen(pos.x * this.app.Enum.LOT_WIDTH, pos.y * this.app.Enum.LOT_WIDTH);
             this.captionSprite.x = screenPos.x;
             this.captionSprite.y = screenPos.y;
         }
@@ -630,10 +666,14 @@ class NPC{
             this.app.textcontainer.addChild( this.captionSprite);
         }else{
             this.captionSprite.text = text;
+            this.captionSprite.visible = true;
         }
         if(duration !== -1) {
             this.app.addCountDown(duration || 5000, () => {
+                this.captionSprite.x = -1000;
+                this.captionSprite.y = -1000;
                 this.captionSprite.text = "";
+                this.captionSprite.visible = false;
             })
         }
 

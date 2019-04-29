@@ -63,9 +63,9 @@ class Map{
     refreshLotVisibility(container){
         this.each((lot)=>{
             if(
-                lot.x > container.left &&
+                lot.x + this.app.Enum.LOT_WIDTH > container.left &&
                 lot.x < container.right &&
-                lot.y > container.top &&
+                lot.y + this.app.Enum.LOT_WIDTH > container.top &&
                 lot.y < container.bottom
             ){
                 lot.visible = true;

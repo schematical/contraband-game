@@ -18,14 +18,7 @@ class Lot{
             MAPPED: "MAPPED"
         }
     }
-    static get Direction(){
-        return {
-            UP: "UP",
-            DOWN: "DOWN",
-            WEST: "WEST",
-            EAST: "EAST"
-        }
-    }
+
     constructor(data){
 
         this.cols = [];
@@ -61,6 +54,9 @@ class Lot{
                     this.factionLotStates[faction.namespace][state] = false;
 
             }
+        })
+        this.buildings.forEach((building)=>{
+            building.resetFactionLotStates(faction);
         })
     }
     getGlobalPos(){
@@ -159,7 +155,7 @@ class Lot{
             lot: this,
             x: _x + startX,
             y: _y + startY,
-            type: data.namespace,
+            type: data,
             capacity: area * 2,
             ingress: this.app.registry.range(data, "ingress", 1),
             egress: this.app.registry.range(data, "egress", 1),
@@ -292,11 +288,18 @@ class Lot{
         })
     }
     onPointerDown(e){
-        if(e.which === 3){
-
+        //console.log("Right Click", e.data.originalEvent.which);
+        if(
+            e.data._npc ||
+            e.data._building
+        ){
+            console.log("E", e.data);
+            return;
         }
-        console.log("Right Click", e.data.originalEvent.which);
-        this.app.selectTile(this);
+
+        this.app.guiSelectLot(this);
+
+
     }
     onPointerOver(){
         let debugText = "LOT(" + this.x + ", " + this.y + ") - (" + this.sprite.width + ", " + this.sprite.height + ")";

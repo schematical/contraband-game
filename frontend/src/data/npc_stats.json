@@ -140,6 +140,12 @@
       "max": 6
     },
     "startValue": 3
+  },
+  {
+    "namespace": "schematical:npc_stats:energy",
+    "desc": "Even NPCs need to sleep now and again.",
+    "name": "energy",
+    "startValue": 100
   }
 
 

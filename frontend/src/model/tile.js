@@ -29,12 +29,11 @@ class Tile{
             this.sprite.height = size;
             container.addChild(this.sprite);
             // Opt-in to interactivity
-            /*this.sprite.interactive = true;
+            this.sprite.interactive = true;
             this.sprite.buttonMode = true;
             this.sprite.on('pointerdown', _.bind(this.onPointerDown, this));
             this.sprite.on('pointerover',  _.bind(this.onPointerOver, this));
             this.sprite.on('pointerout',  _.bind(this.onPointerOut, this))
-    */
             //.on('pointerup', onButtonUp)
             //.on('pointerupoutside', onButtonUp)
         }
@@ -47,18 +46,28 @@ class Tile{
             y: this.lot.y + (this.y / 4)
         }
     }
-   /* onPointerDown(){
-        this.lot.app.setState({selected_building: this.building});
+    onPointerDown(e){
+
+        if(!this.building){
+            throw new Error("Missing `this.building`");
+        }
+        console.log(this.building.id + " FIRING");
+        /*if(e.data._npc){
+            return;
+        }
+        e.data._building = this.building;*/
+        e.stopPropagation();
+        this.lot.app.guiSelectBuilding(this.building);
     }
     onPointerOver(){
-        let buildingReg = this.lot.app.registry.buildings.get(this.building.type );
+        let buildingReg = this.building.type;
         let debugText = buildingReg.name + "(" + this.lot.x + "." + this.x + ", " + this.lot.y + '.' + this.y + ")";
         this.lot.app.setState({text: debugText});
 
     }
     onPointerOut(){
         this.lot.app.setState({text: ""});
-    }*/
+    }
 
 }
 export default Tile;

@@ -34,6 +34,11 @@ const Viewport = require('pixi-viewport');
 class App extends Component {
     constructor(props) {
         super(props);
+        this.Enum = {
+            LOT_WIDTH: 64,
+            PARTICLE_SIZE: 1
+        }
+        this.Enum.TILE_WIDTH = this.Enum.LOT_WIDTH / 4;
         this.rnd = seedrandom(Math.random());
         this.state = {
             cycleCount:0,
@@ -101,10 +106,10 @@ class App extends Component {
             <div className="App">
                 <NavBarComponent app={this}/>
                 <HeaderComponent />
-                <div className="container">
+                <div className="container app-body-container" >
                     <div className="row">
-                        <div className="span5 bs-docs-sidebar">
-
+                        <div className="span5 clickable-holder">
+<div class="clickable bs-docs-sidebar ">
                             { this.state.selected_lot &&
                             <LotDetailComponent app={this} lot={this.state.selected_lot} />
                             }
@@ -114,25 +119,30 @@ class App extends Component {
                             { this.state.selected_building &&
                             <BuildingDetailComponent app={this} building={this.state.selected_building} />
                             }
-
+</div>
                         </div>
                         <div className="span7" >
+                            <div id="mainContainer" ></div>
                             {this.alerts.map((alert, index) => {
-                                return (<div key={index} className="alert alert-block">
-                                    <button type="button" className="close"  onClick={()=>{
-                                        this.removeAlert(alert);
-                                    }}>&times;</button>
-                                    <h4>Warning!</h4>
-                                    {alert.text}
-                                </div>)
+                                return (
+                                    <div class="clickable-holder">
+                                        <div key={index} className="alert alert-block clickable">
+                                            <button type="button" className="close"  onClick={()=>{
+                                                this.removeAlert(alert);
+                                            }}>&times;</button>
+                                            <h4>Warning!</h4>
+                                            {alert.text}
+                                        </div>
+                                    </div>
+                                )
                             })}
 
                             {!this.state.started &&
-                            <div className="jumbotron">
+                            <div className="jumbotron clickable">
                                 <h1>Necropolis</h1>
                                 <p className="lead">It would appear that the end of days is upon us. You and 3 of your friends find yourself in the middle of a Zombie apocalypse. They look to you to lead them forward through these perilous times.
                                 </p>
-                                <a className="btn btn-large btn-success" href="#" onClick={this.start}>Begin your journey</a>
+                                <a className="btn btn-large btn-success clickable" href="#" onClick={this.start}>Begin your journey</a>
                             </div> }
                             {this.state.text }
                         </div>
@@ -171,6 +181,7 @@ class App extends Component {
         this.map.refreshLotVisibility(this.pixicontainer);
         this.refreshVisibleNPCS();
         this.map.render( this.pixicontainer );
+        this.pixicontainer.fitWorld(true);
         this.storyManager.start("mission1")
 
 
@@ -229,7 +240,7 @@ class App extends Component {
                 npc.tickBiology(app.ticker.elapsedMS);
 
             })
-            this.storyManager.tick(newState.ticksSinceNPCPhysics);
+            //this.storyManager.tick(newState.ticksSinceNPCPhysics);
         }
 
     }
@@ -300,8 +311,8 @@ class App extends Component {
 
         this.mainContainer  = document.getElementById("mainContainer");
         let args = {
-            width: window.jQuery(this.mainContainer ).width(),
-            height: window.jQuery(this.mainContainer ).height(),
+            width: window.innerWidth,//window.jQuery(this.mainContainer ).width(),
+            height: window.innerHeight,//window.jQuery(this.mainContainer ).height(),
             backgroundColor: 0x000084,
             resolution: window.devicePixelRatio || 1
         };
@@ -316,11 +327,12 @@ class App extends Component {
         this.pixicontainer =  new Viewport({
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
-            worldWidth: 300,
-            worldHeight: 300,
+            worldWidth: window.innerWidth,
+            worldHeight: window.innerHeight,
 
             interaction: app.renderer.plugins.interaction // the interaction module is important for wheel() to work properly when renderer.view is placed or scaled
         });
+
 
         this.pixi.stage.addChild(this.pixicontainer);
 
@@ -329,17 +341,27 @@ class App extends Component {
 
 
 
-// Move container to the center
+/*// Move container to the center
         this.pixicontainer.x = this.pixi.screen.width / 2;
         this.pixicontainer.y = this.pixi.screen.height / 2;
 
 // Center bunny sprite in local container coordinates
         this.pixicontainer.pivot.x = this.pixicontainer.width / 2 + 32;
-        this.pixicontainer.pivot.y = this.pixicontainer.height / 2 + 32;
+        this.pixicontainer.pivot.y = this.pixicontainer.height / 2 + 32;*/
 
 
+        /*window.addEventListener('resize', resize);
+        function resize() {
+            // Resize the renderer
+            app.renderer.resize(window.innerWidth, window.innerHeight);
 
+            // You can use the 'screen' property as the renderer visible
+            // area, this is more useful than view.width/height because
+            // it handles resolution
+            this.pixicontainer.position.set(app.screen.width, app.screen.height);
+        }
 
+        resize();*/
 
 // activate plugins
         this.pixicontainer
@@ -349,15 +371,15 @@ class App extends Component {
             .decelerate();
 
         this.pixicontainer.on("drag-end", ()=>{
-            this.map.refreshLotVisibility(this.pixicontainer);
+
             this.refreshVisibleNPCS();
         })
-
-        this.pixicontainer.fitWorld(true);//zoom(i);//-1028);
+        this.pixicontainer.moveCenter(this.pixicontainer.width / 2 + 32, this.pixicontainer.height / 2 + 32)
 
     }
 
     refreshVisibleNPCS(){
+        this.map.refreshLotVisibility(this.pixicontainer);
         this.visibleNPCs = [];
         this.map.each((lot)=>{
             if(!lot.visible){
@@ -397,7 +419,12 @@ class App extends Component {
         })
     }
 
-    selectTile(lot){
+    guiSelectNPC(npc){
+        this.guiClearSelection();
+        this.setState({selected_npc: npc});
+        npc.guiSelect();
+    }
+    guiSelectLot(lot){
         this.guiClearSelection();
         this.setState({selected_lot: lot});
         lot.guiSelect();
@@ -422,7 +449,7 @@ class App extends Component {
             this.state.selected_npc.guiDeselect();
             this.state.selected_npc = null;
         }
-        this.setState({selected_lot: null, selected_npc: null});
+        this.setState({selected_lot: null, selected_npc: null, selected_building: null});
     }
     guiSelectNPC(npc){
         this.guiClearSelection();

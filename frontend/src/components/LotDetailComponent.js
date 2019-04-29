@@ -23,11 +23,11 @@ class LotDetailComponent extends Component {
             })}*/}
             <li className="nav-header">Buildings</li>
             {this.lot.buildings.map((building, index) => {
-                return <div>
+                return <div key={building.id}>
                     <li>
                         <a href="#file-structure"  onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectBuilding(building) }} >
                             <i className="icon-chevron-right"></i>
-                            {this.app.registry.buildings.get(building.type).name} {index}
+                            {building.type.name}
                         </a>
                     </li>
                     {/*<NPCListComponent npcs={building.npcs} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />*/}

@@ -19,7 +19,7 @@ class ModalComponent extends Component {
     }
     render() {
         return (
-            <div id={this.uniqueId} className="modal hide" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div id={this.uniqueId} className="modal hide clickable" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                 <div className="modal-header">
                     <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h3 id="modalLabel">{this.header}</h3>

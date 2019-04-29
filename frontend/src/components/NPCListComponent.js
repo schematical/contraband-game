@@ -22,7 +22,7 @@ class NPCListComponent extends Component {
     return (<div>
       {this.props.npcs.map((npc, index2) => {
         return(
-            <li>
+            <li key={npc.id}>
               <a href="#file-structure" onClick={this.setupOnClick(npc)}>
                 {npc.name || npc.type} {index2} {npc.activeBehavior && npc.activeBehavior.state}
               </a>
@@ -36,7 +36,7 @@ class NPCListComponent extends Component {
         <table className="table table-condensed">
           <tbody>
           {this.props.npcs.map((npc, index2) => {
-            return  <tr className="success">
+            return  <tr className="success" key={npc.id}>
                   <td>
                     <input  type="checkbox" value={npc._selected} checked={npc._selected} onChange={(event)=>{
                       npc._selected = event.target.value;

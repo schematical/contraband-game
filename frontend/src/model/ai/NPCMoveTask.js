@@ -39,7 +39,6 @@ class NPCMoveTask extends NPCTask{
 
 
             if(!this.npc.attemptIngress(this.building)){
-                console.log("Ingress failed");
                 let nVec = this.npc.normalizedVectorTo(this.building.ingressTiles[0]);
                 this.npc.velocity = {
                     x: nVec.x,

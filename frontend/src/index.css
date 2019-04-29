@@ -1,0 +1,25 @@
+#mainContainer canvas{
+    position: fixed;
+    height: 100%;
+    width:100%;
+    left: 0Px;
+    top:0Px;
+    z-index: 25;
+    pointer-events: all;
+}
+.app-body-container{
+
+    pointer-events: none;
+
+}
+.bs-docs-sidebar{
+    width: 100%;
+}
+.clickable{
+    z-index: 5000;
+    pointer-events: all;
+    position:absolute;
+}
+.clickable-holder{
+    position: relative;
+}

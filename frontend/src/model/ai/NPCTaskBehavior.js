@@ -15,12 +15,12 @@ class NPCTaskBehavior extends NPCBehavior{
         if(!this.npc.getCurrentTask()){
             return false;
         }
-        console.log("SHOULD EXICUTE");
+
         return true;
 
     }
     continueExecuting(){
-        console.log("CONTINUE EXICUTEING");
+
         if(!this.npc.getCurrentTask()){
             return false;
         }

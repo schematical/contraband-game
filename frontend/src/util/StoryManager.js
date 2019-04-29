@@ -88,9 +88,10 @@ class StoryManager{
                 {
                     _done: false,
                     onStart:()=>{
+
                         this.app.addAlert({
                             text:"Your friends and you wait in a parking lot for your ride to arrive. " +
-                                "As you wait you wonder how you all managed to dress in matching light blue shirts that, from a distance, make you look like square blocks." +
+                                "As you wait you wonder how you all managed to dress in matching light blue shirts that, from a distance, make you look like square blocks. " +
                                 "Then suddenly you notice something off in the distance..."
                         })
                         this.app.zoom(150)
@@ -146,7 +147,7 @@ class StoryManager{
                 {
                     onStart:()=>{
                         this.app.addAlert({
-                            text:"The stranger starts wildly clawing and biting at you and your friends. You are forced to defend your selves."
+                            text:"The stranger starts wildly clawing and biting at you and your friends. You are forced to defend your selves. "
                         })
                     },
                     dialogEvent: "mission1c",
@@ -158,8 +159,8 @@ class StoryManager{
                     onStart:()=>{
                         this._lock_lot = false;
                         this.app.addAlert({
-                            text:"The 4 of you over power the stranger knocking them to the ground. When the strangers head hits the pavement with a thud it bursts open spilling the contents in side." +
-                                "In the distance you hear more moaning and the faint green block-ish outline of more creatures like this." +
+                            text:"The 4 of you over power the stranger knocking them to the ground. When the strangers head hits the pavement with a thud it bursts open spilling the contents in side. " +
+                                "In the distance you hear more moaning and the faint green block-ish outline of more creatures like this. " +
                                 "It's probably a good idea to seek shelter. " +
                                 "<Click on the lot next to you and in the menu in the upper left corner menu select `Explore`>"
                         })
@@ -182,7 +183,7 @@ class StoryManager{
                     onStart:()=>{
                         this.app.addAlert({
                             text:"You have successfully walked about 30 feet... congrats, way to go Forest Gump." +
-                                "You see a suspiciously blocky building that looks like something that was designed for a low budget indie hackathon game but is definitely a building that can provide shelter" +
+                                "You see a suspiciously blocky building that looks like something that was designed for a low budget indie hackathon game but is definitely a building that can provide shelter. " +
                                 "<In the top left menu select the building and click `Enter`>"
                         })
                     },
@@ -204,7 +205,7 @@ class StoryManager{
                         this.app.addAlert({
                             text:"You enter the building successfully taking shelter. " +
                                 "Having staring contests and telling grossly exaggerated stories about your love life gets boring pretty quick. " +
-                                "You start to feel thirsty and realize you soon will need food and water. It is time to start foraging for food." +
+                                "You start to feel thirsty and realize you soon will need food and water. It is time to start foraging for food. " +
                                 "<To exit the building select a lot and click `Explore`>" +
                                 "In realtiy this is as far as this demo is at the moment. So hop on the Schematical discord [https://discord.gg/j9P8AcR] and let me know what you think ~Schematical"
                         })
