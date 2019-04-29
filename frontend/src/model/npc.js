@@ -28,7 +28,7 @@ class NPC{
         this.activeBehavior = null;
         this.statusEffects = [];
         this.mission = null;
-
+        this._populated = false;
         _.extend(this, data);
         this.eventEmitter = new events.EventEmitter();
 
@@ -117,7 +117,7 @@ class NPC{
         this.name = names[Math.floor(Math.random() * names.length)] += " ";
         this.name += names[Math.floor(Math.random() * names.length)].substr(0,1) + '.';
         this.occupation  = this.app.registry.occupations.rnd();
-
+        this._populated = true;
     }
     attemptEgress(){
         if(!this.cover){

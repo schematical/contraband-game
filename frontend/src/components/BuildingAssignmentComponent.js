@@ -19,8 +19,8 @@ class BuildingAssignmentComponent extends Component {
     return (
         <form>
           <fieldset>
-            <legend>Legend</legend>
-            <label>Label name</label>
+            <legend>{this.building && this.building.name}</legend>
+            <label>Assignment: </label>
             <div className="input-append">
 
                 <div className="btn-group">

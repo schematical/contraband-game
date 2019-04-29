@@ -214,5 +214,53 @@
     "text": "I think I am going to be sick",
     "event": "mission1d",
     "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1e_1",
+    "text": "This place smells funny",
+    "event": "mission1e",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1f_1",
+    "text": "I think they are in trouble",
+    "event": "mission1f",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1f_2",
+    "text": "They need our help",
+    "event": "mission1f",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1f_3",
+    "text": "Lets see if they want to join up",
+    "event": "mission1f",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1f_4",
+    "text": "Hey do you know how to start a fire?",
+    "event": "mission1f",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1g_1",
+    "text": "Yay, we made a new friend",
+    "event": "mission1g",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1g_2",
+    "text": "The more the merrier ",
+    "event": "mission1g",
+    "type": "human"
+  },
+  {
+    "namespace": "schematical:dialog:mission1g_3",
+    "text": "Its like we are starting a band ",
+    "event": "mission1g",
+    "type": "human"
   }
 ]

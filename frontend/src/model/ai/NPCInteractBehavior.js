@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import NPC from "../npc";
 import NPCBehavior from "./NPCBehavior";
-class NPCAttackBehavior extends NPCBehavior{
+class NPCInteractBehavior extends NPCBehavior{
     static States(){
         return {
             "Wondering":"Wondering"
@@ -55,14 +55,10 @@ class NPCAttackBehavior extends NPCBehavior{
         return false;
     }
     execute(){
-        this.state = "Attacking";
-        this.npc.attackNPC(this.target);
-        /*this.npc.velocity = {
-            x: 0,
-            y: 0
-        }*/
+        this.interact(this.target);
+
 
     }
 
 }
-export default NPCAttackBehavior;
+export default NPCInteractBehavior;

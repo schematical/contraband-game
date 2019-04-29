@@ -1,5 +1,6 @@
 import _ from "underscore";
 import NPC from "../model/npc";
+import Building from "../model/building";
 
 class Mission{
     constructor(data){
@@ -76,6 +77,9 @@ class StoryManager{
                 if(npc.type == NPC.Type.ZOMBIE){
                     return false;
                 }
+                if(npc.type == NPC.Type.HUMAN && !npc.faction){
+                    return false;
+                }
                 /*if(
                     lot.x != 0 &&
                     lot.y != 0
@@ -149,7 +153,7 @@ class StoryManager{
                 {
                     onStart:()=>{
                         this.app.addAlert({
-                            text:"The stranger starts wildly clawing and biting at you and your friends. You are forced to defend your selves. "
+                            text:"The stranger starts wildly clawing and biting at you and your friends. You are forced to defend your selves. With every strike you land red blocks of pixelated blood spew from the creatures face "
                         })
                     },
                     dialogEvent: "mission1c",
@@ -206,17 +210,102 @@ class StoryManager{
                     onStart:()=>{
                         this.app.addAlert({
                             text:"You enter the building successfully taking shelter. " +
-                                "Having staring contests and telling grossly exaggerated stories about your love life gets boring pretty quick. " +
-                                "You start to feel thirsty and realize you soon will need food and water. It is time to start foraging for food. " +
-                                "<To exit the building select a lot and click `Explore`>" +
-                                "In realtiy this is as far as this demo is at the moment. So hop on the Schematical discord [https://discord.gg/j9P8AcR] and let me know what you think ~Schematical"
-                        })
+                                "You should mark this building as your HQ by selecting the building and clicking `Assign` in the upper left hand menu "
+                            })
                     },
-                    dialogEvent: "mission1d",
+                    dialogEvent: "mission1e",
                     isDone:()=>{
+                        let hasBuildingAssignment = false;
+                        this.factionNPCs.forEach((npc)=>{
+                            if(
+                                npc.cover &&
+                                npc.cover.getFactionLotState(npc.faction, Building.States.ASSIGNMENT)
+                            ){
+                                hasBuildingAssignment = true;
+                            }
+                        })
+                        return hasBuildingAssignment;
+                    }
+
+
+                },
+
+                {
+                    onStart:()=>{
+                        this.app.addAlert({
+                            text: "Having staring contests and telling grossly exaggerated stories about your love life gets boring pretty quick. " +
+                                "You see someone outside. They definitely are NOT the undead, "+
+                                "you know this because of the style of thier grey blocky shirt (grey and blocky are all the rage with the living kids)" +
+                                "You should go outside and see if they want to join your group " +
+                                "<To exit the building select the building and click `Evacuate`>"
+                        })
+
+                        this.civilianNpc = this.app.addNPC({
+
+                            type: NPC.Type.HUMAN,
+                            faction: null,
+                            lot: this.factionNPCs[0].lot,
+                            mission: mission
+                        });
+
+                        this.app.aiManager.setupCivilian( this.civilianNpc );
+                        this.factionNPCs[0].lot.addNPC( this.civilianNpc );
+                        this.civilianNpc.lotPos = {
+                            x:2,
+                            y:3.5
+                        };
+                        this.app.addNPCVisible(this.civilianNpc);
+
+                        this.factionNPCs[0].lot.render(this.app.pixicontainer);
+                    },
+                    dialogEvent: "mission1f",
+                    isDone:()=>{
+                        if(!this.civilianNpc.faction){
+                            return false;
+                        }
+                        return true;
+                    }
+
+
+                },
+                {
+                    onStart:()=>{
+                        this.app.addAlert({
+                            text: "Looks like you made a new friend. Congrats! " +
+                                "In reality this is as far as this demo is at the moment. So hop on the Schematical discord [https://discord.gg/j9P8AcR] and let me know what you think ~Schematical"
+
+                        })
+
+                        this.civilianNpc = this.app.addNPC({
+
+                            type: NPC.Type.HUMAN,
+                            faction: null,
+                            lot: this.factionNPCs[0].lot,
+                            mission: mission
+                        });
+
+                        this.app.aiManager.setupCivilian( this.civilianNpc );
+                        this.factionNPCs[0].lot.addNPC( this.civilianNpc );
+                        this.civilianNpc.lotPos = {
+                            x:2,
+                            y:3.5
+                        };
+                        this.app.addNPCVisible(this.civilianNpc);
+
+                        this.factionNPCs[0].lot.render(this.app.pixicontainer);
+                    },
+                    dialogEvent: "mission1g",
+                    isDone:()=>{
+
                         return false;
                     }
-                }
+
+
+                },
+                //"You start to feel thirsty and realize you soon will need food and water. It is time to start foraging for food. " +
+
+
+
             ]
 
         });

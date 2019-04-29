@@ -7,7 +7,7 @@ import {Helper} from "../util/Helper";
 import _ from "underscore";
 import NPCHuntBehavior from "./ai/NPCHuntBehavior";
 import NPCWonderBehavior from "./ai/NPCWonderBehavior";
-import NPCAttackBehavior from "./ai/NPCAttackBehavior";
+import NPCInteractBehavior from "./ai/NPCInteractBehavior";
 class Lot{
     static get States(){
         return {

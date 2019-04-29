@@ -31,6 +31,7 @@ import NPCAIManager from "./model/ai/NPCAIManager";
 import StoryManager from "./util/StoryManager";
 import FooterBarComponent from "./components/FooterBarComponent";
 import BuildingAssignmentComponent from "./components/BuildingAssignmentComponent";
+import NPCRecruitComponent from "./components/NPCRecruitComponent";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -170,6 +171,11 @@ class App extends Component {
                         this.gui.buildingAssignmentModal = modal;
                     }}>
                         <BuildingAssignmentComponent app={this} />
+                    </ModalComponent>
+                    <ModalComponent app={this} onStart={(modal)=>{
+                        this.gui.npcRecruitModal = modal;
+                    }}>
+                        <NPCRecruitComponent app={this} />
                     </ModalComponent>
                 </div>
             </div>
