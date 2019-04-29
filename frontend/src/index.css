@@ -14,6 +14,7 @@
 }
 .bs-docs-sidebar{
     width: 100%;
+    color: white;
 }
 .clickable{
     z-index: 5000;

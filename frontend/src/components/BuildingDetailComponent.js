@@ -11,22 +11,35 @@ class BuildingDetailComponent extends Component {
     super(props);
     this.promptActionEnter = this.promptActionEnter.bind(this);
     this.promptActionEgress = this.promptActionEgress.bind(this);
+    this.promptAssignBuilding = this.promptAssignBuilding.bind(this);
   }
   render() {
     return (
         <div>
           <ul className="nav nav-list bs-docs-sidenav">
             <li>
-              <a>
+
               {this.props.building.name || this.props.building.type.name}
-              </a>
+
+            </li>
+            <li>
+              {this.props.building.getFactionLotState(this.props.app.playerFaction, Building.States.ASSIGNMENT) ?
+                  <div>
+                    {this.props.building.getFactionLotState(this.props.app.playerFaction, Building.States.ASSIGNMENT).name }
+                    <a href="#file-structure" onClick={this.promptAssignBuilding}>
+                      Re-assign
+                    </a>
+                  </div>
+                  :
+                  <div>
+                    Unassigned
+                    <a href="#file-structure" onClick={this.promptAssignBuilding}>
+                      Assign
+                    </a>
+                  </div>
+              }
             </li>
             <li className="nav-header">NPCs</li>
-            {this.props.building.lot.getFactionLotState(this.props.app.playerFaction, Lot.States.EXPLORED) ?
-                <NPCListComponent npcs={this.props.building.npcs} app={this.props.app} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />
-                :
-                <span>Unexplored...</span>
-            }
             {this.props.building.getFactionLotState(this.props.app.playerFaction, Building.States.EXPLORED) ?
                 <NPCListComponent npcs={this.props.building.npcs} app={this.props.app} onClick={(event, npc)=>{ event.preventDefault(); return this.app.guiSelectNPC(npc) }} />
                 :
@@ -34,34 +47,32 @@ class BuildingDetailComponent extends Component {
             }
             <li className="nav-header">Materials</li>
             <li>
-              <a href="#file-structure">
+
                 Cover: {this.props.building.cover}
-              </a>
+
             </li>
             <li>
-              <a href="#file-structure">
+
                 Ingress: {this.props.building.ingress}
-              </a>
+
             </li>
             <li>
-              <a href="#file-structure">
+
                 Egress: {this.props.building.egress}
-              </a>
+
             </li>
             <li>
-              <a href="#file-structure">
+
                 Primary Material: {this.props.building.primaryMaterial.name}
-              </a>
+
             </li>
             <li>
-              <a href="#file-structure">
+
                 Secondary Material: {this.props.building.secondaryMaterial.name}
-              </a>
+
             </li>
             <li>
-              <a href="#file-structure">
                 Fortification Material: {this.props.building.fortificationMaterial.name}
-              </a>
             </li>
             <li className="nav-header">Resources</li>
             <ResourceInstanceListComponent app={this.props.app} resources={this.props.building.resources} />
@@ -113,6 +124,23 @@ class BuildingDetailComponent extends Component {
         })
         return task;
       }
+    });
+  }
+  promptAssignBuilding(event){
+
+    this.props.app.gui.buildingAssignmentComponent.show({
+      building: this.props.building,
+      onComplete:()=>{
+
+        //this.props.building.lot.setFactionLotState(this.props.app.playerFaction, Lot.States.ALLOWED, true);
+      },
+     /* taskConstructor:(npc)=>{
+        let task = new NPCMoveTask({
+          lot:this.props.building.lot,
+          //building: this.props.building
+        })
+        return task;
+      }*/
     });
   }
 

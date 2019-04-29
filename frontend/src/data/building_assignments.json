@@ -1,0 +1,17 @@
+[
+  {
+    "namespace": "schematical:building_assignment:hq_1",
+    "name": "Temporary Shelter",
+    "desc": "This is your home base. If all else fails we regroup here."
+  },
+  {
+    "namespace": "schematical:building_assignment:storage",
+    "name": "Storage",
+    "desc": "Put stuff in here"
+  },
+  {
+    "namespace": "schematical:building_assignment:guard_post",
+    "name": "Guard Post",
+    "desc": "A place to house your guards"
+  }
+]

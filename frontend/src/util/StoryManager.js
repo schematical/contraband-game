@@ -130,6 +130,7 @@ class StoryManager{
                             y:3.5
                         };
                         this.app.addNPCVisible(this.zombieNpc);
+                        this.zombieNpc._stats["schematical:npc_stats:health"] = 30;
                         this.factionNPCs[0].lot.render(this.app.pixicontainer);
                         this._done = false;
 

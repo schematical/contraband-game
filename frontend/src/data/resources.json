@@ -24,5 +24,45 @@
       "schematical:npc_stats:energy": 1
     }
 
+  },
+  {
+    "namespace": "schematical:resources:beer",
+    "name": "beer",
+    "spawnCount": {
+      "min": 1,
+      "max": 12
+    },
+    "consumable": true,
+    "needs": {
+      "schematical:npc_stats:hydration": 1,
+      "schematical:npc_stats:moral": 1
+    }
+
+  },
+  {
+    "namespace": "schematical:resources:cigarettes",
+    "name": "cigarettes",
+    "spawnCount": {
+      "min": 1,
+      "max": 12
+    },
+    "consumable": true,
+    "needs": {
+
+    }
+
+  },
+  {
+    "namespace": "schematical:resources:chips",
+    "name": "chips",
+    "spawnCount": {
+      "min": 1,
+      "max": 12
+    },
+    "consumable": true,
+    "needs": {
+      "schematical:npc_stats:hunger": 3
+    }
+
   }
 ]

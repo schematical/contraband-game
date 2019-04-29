@@ -6,6 +6,7 @@ import occupations from './data/occupations.json';
 import npcStats from './data/npc_stats.json';
 import dialog from './data/dialog.json';
 import resources from './data/resources.json';
+import building_assignments from './data/building_assignments.json';
 import './App.css';
 import * as PIXI from 'pixi.js';
 import NavBarComponent from "./components/NavBarComponent";
@@ -29,6 +30,7 @@ import NPCDialogManager from "./util/NPCDialogManager";
 import NPCAIManager from "./model/ai/NPCAIManager";
 import StoryManager from "./util/StoryManager";
 import FooterBarComponent from "./components/FooterBarComponent";
+import BuildingAssignmentComponent from "./components/BuildingAssignmentComponent";
 const app = new PIXI.Application();
 const Viewport = require('pixi-viewport');
 
@@ -103,6 +105,10 @@ class App extends Component {
         dialog.forEach((data)=>{
             dialogReg.add(data.namespace, data);
         });
+        let buildingAssignmentReg = this.registry.add('building_assignments');
+        building_assignments.forEach((data)=>{
+            buildingAssignmentReg.add(data.namespace, data);
+        });
     }
 
     render() {
@@ -114,17 +120,17 @@ class App extends Component {
                 <div className="container app-body-container" >
                     <div className="row">
                         <div className="span5 clickable-holder">
-<div class="clickable bs-docs-sidebar ">
-                            { this.state.selected_lot &&
-                            <LotDetailComponent app={this} lot={this.state.selected_lot} />
-                            }
-                            {this.state.selected_npc &&
-                            <NPCDetailComponent app={this} npc={this.state.selected_npc}/>
-                            }
-                            { this.state.selected_building &&
-                            <BuildingDetailComponent app={this} building={this.state.selected_building} />
-                            }
-</div>
+                            <div className="clickable bs-docs-sidebar ">
+                                { this.state.selected_lot &&
+                                <LotDetailComponent app={this} lot={this.state.selected_lot} />
+                                }
+                                {this.state.selected_npc &&
+                                <NPCDetailComponent app={this} npc={this.state.selected_npc}/>
+                                }
+                                { this.state.selected_building &&
+                                <BuildingDetailComponent app={this} building={this.state.selected_building} />
+                                }
+                            </div>
                         </div>
                         <div className="span7" >
                             <div id="mainContainer" ></div>
@@ -159,6 +165,11 @@ class App extends Component {
                          this.gui.taskAssignmentModal = modal;
                     }}>
                         <TaskAssignmentComponent app={this} />
+                    </ModalComponent>
+                    <ModalComponent app={this} onStart={(modal)=>{
+                        this.gui.buildingAssignmentModal = modal;
+                    }}>
+                        <BuildingAssignmentComponent app={this} />
                     </ModalComponent>
                 </div>
             </div>
@@ -264,6 +275,7 @@ class App extends Component {
         })
         this.factions.push(this.playerFaction );
         let startLot = this.map.get(0,0 );
+        startLot.setFactionLotState(this.playerFaction, Lot.States.ALLOWED, true);
         for(let i = 0; i < 4 ; i++){
             let npc = this.addNPC({
                 type: NPC.Type.HUMAN,
@@ -320,7 +332,7 @@ class App extends Component {
         let args = {
             width: window.innerWidth,//window.jQuery(this.mainContainer ).width(),
             height: window.innerHeight,//window.jQuery(this.mainContainer ).height(),
-            backgroundColor: 0x000084,
+            backgroundColor: 0x000000,//0x000084,
             resolution: window.devicePixelRatio || 1
         };
 
@@ -334,9 +346,9 @@ class App extends Component {
         this.pixicontainer =  new Viewport({
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
-            worldWidth: window.innerWidth,
-            worldHeight: window.innerHeight,
-
+            worldWidth: 10000,//window.innerWidth,
+            worldHeight: 10000,//window.innerHeight,
+            passiveWheel: false,
             interaction: app.renderer.plugins.interaction // the interaction module is important for wheel() to work properly when renderer.view is placed or scaled
         });
 
@@ -381,6 +393,12 @@ class App extends Component {
 
             this.refreshVisibleNPCS();
         })
+        this._zoom = 150;
+        window.addEventListener("wheel", event => {
+            const delta = Math.sign(event.deltaY);
+            this._zoom += 50 * delta;
+            this.zoom(this._zoom)
+        });
         this.pixicontainer.moveCenter(this.pixicontainer.width / 2 + 32, this.pixicontainer.height / 2 + 32)
 
     }

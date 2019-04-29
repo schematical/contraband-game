@@ -27,10 +27,10 @@ class ModalComponent extends Component {
                 <div className="modal-body">
                     {this.props.children}
                 </div>
-                <div className="modal-footer">
+                {/*<div className="modal-footer">
                     <button className="btn" data-dismiss="modal">Close</button>
                     <button className="btn btn-primary">Save changes</button>
-                </div>
+                </div>*/}
             </div>
         );
     }
