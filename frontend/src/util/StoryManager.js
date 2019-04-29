@@ -32,6 +32,7 @@ class Mission{
     }
     nextMissionPart(){
         this.missionPartIndex += 1;
+        console.log("Starting Missino Part: " + this.missionPartIndex );
         if(this.missionPartIndex >= this.missionParts.length){
             //End mission
             console.log("MISSION OVER");

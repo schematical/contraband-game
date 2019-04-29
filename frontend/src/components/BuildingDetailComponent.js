@@ -3,6 +3,7 @@ import NPCListComponent from "./NPCListComponent";
 import Lot from "../model/lot";
 import NPCMoveTask from "../model/ai/NPCMoveTask";
 import Building from "../model/building";
+import ResourceInstanceListComponent from "./ResourceInstanceListComponent";
 
 
 class BuildingDetailComponent extends Component {
@@ -62,7 +63,8 @@ class BuildingDetailComponent extends Component {
                 Fortification Material: {this.props.building.fortificationMaterial.name}
               </a>
             </li>
-
+            <li className="nav-header">Resources</li>
+            <ResourceInstanceListComponent app={this.props.app} resources={this.props.building.resources} />
             <li className="nav-header">Actions</li>
             <li>
               <a href="#file-structure" onClick={this.promptActionEnter}>

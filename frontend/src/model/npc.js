@@ -178,7 +178,7 @@ class NPC{
             let canEnter = false;
             while (i < building.tiles.length) {
                 let dist = this.distTo(building.tiles[0]);
-                if (dist < .25) {
+                if (dist < .3) {
                     canEnter = true;
                 }
                 i++;

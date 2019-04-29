@@ -5,6 +5,7 @@ import materials from './data/materials.json';
 import occupations from './data/occupations.json';
 import npcStats from './data/npc_stats.json';
 import dialog from './data/dialog.json';
+import resources from './data/resources.json';
 import './App.css';
 import * as PIXI from 'pixi.js';
 import NavBarComponent from "./components/NavBarComponent";
@@ -77,6 +78,10 @@ class App extends Component {
         buildings.forEach((data)=>{
             buildingReg.add(data.namespace, data);
         });
+        let resourcesReg = this.registry.add('resources');
+        resources.forEach((data)=>{
+            resourcesReg.add(data.namespace, data);
+        });
 
         let eventsReg = this.registry.add('events');
         events.forEach((data)=>{
@@ -123,19 +128,21 @@ class App extends Component {
                         </div>
                         <div className="span7" >
                             <div id="mainContainer" ></div>
-                            {this.alerts.map((alert, index) => {
-                                return (
-                                    <div class="clickable-holder">
-                                        <div key={index} className="alert alert-block clickable">
+                            <div  className="clickable-holder  ">
+                                <div className="clickable">
+                                    {this.alerts.map((alert, index) => {
+                                        return (
+                                            <div  key={index} className="alert alert-block">
                                             <button type="button" className="close"  onClick={()=>{
                                                 this.removeAlert(alert);
                                             }}>&times;</button>
                                             <h4>Warning!</h4>
                                             {alert.text}
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
 
                             {!this.state.started &&
                             <div className="jumbotron clickable">
@@ -240,7 +247,7 @@ class App extends Component {
                 npc.tickBiology(app.ticker.elapsedMS);
 
             })
-            //this.storyManager.tick(newState.ticksSinceNPCPhysics);
+            this.storyManager.tick(newState.ticksSinceNPCPhysics);
         }
 
     }

@@ -42,8 +42,8 @@ class Tile{
     }
     getGlobalPos(){
         return {
-            x: this.lot.x + (this.x / 4),
-            y: this.lot.y + (this.y / 4)
+            x: this.lot.x + ((this.x  + .5) / 4),
+            y: this.lot.y + ((this.y + .5) / 4)
         }
     }
     onPointerDown(e){

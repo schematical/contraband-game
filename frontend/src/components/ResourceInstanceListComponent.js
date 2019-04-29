@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 
 
-class NPCListComponent extends Component {
+class ResourceInstanceListComponent extends Component {
   constructor(props){
     super(props);
     this.setupOnClick = this.setupOnClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.props.npcs.forEach((npc)=>{
-      npc._selected = true;
-    })
+
   }
 
   handleChange(event) {
@@ -20,18 +18,18 @@ class NPCListComponent extends Component {
       return this.renderTable();
     }
     return (<div>
-      {this.props.npcs.map((npc, index2) => {
+      {this.props.resources.map((resourceInstance, index2) => {
         return(
-            <li key={npc.id}>
-              <a href="#file-structure" onClick={this.setupOnClick(npc)}>
-                {npc.name || npc.type} {index2} {npc.activeBehavior && npc.activeBehavior.state}
+            <li key={index2}>
+              <a href="#file-structure" onClick={this.setupOnClick(resourceInstance)}>
+                {resourceInstance.type.name} {resourceInstance.count}
               </a>
             </li>
             )
       })}</div>
     );
   }
-  renderTable(){
+  /*renderTable(){
     return (
         <table className="table table-condensed">
           <tbody>
@@ -53,11 +51,11 @@ class NPCListComponent extends Component {
           </tbody>
         </table>
     )
-  }
-  setupOnClick(npc){
+  }*/
+  setupOnClick(resourceInstance){
     return (event) => {
       if (this.props.onClick) {
-        this.props.onClick(event, npc);
+        this.props.onClick(event, resourceInstance);
       }
       event.preventDefault();
     }
@@ -74,4 +72,4 @@ class NPCListComponent extends Component {
   }
 }
 
-export default NPCListComponent;
+export default ResourceInstanceListComponent;

@@ -156,6 +156,7 @@ class Lot{
             x: _x + startX,
             y: _y + startY,
             type: data,
+            app: this.app,
             capacity: area * 2,
             ingress: this.app.registry.range(data, "ingress", 1),
             egress: this.app.registry.range(data, "egress", 1),
@@ -173,7 +174,7 @@ class Lot{
             fortificationMaterial: new Material(this.app.registry.materials.get("schematical:material:none"))
         });
 
-
+        building.populateResources();
 
 
 

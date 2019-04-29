@@ -52,8 +52,8 @@ class Building{
         for(let i = (npcChance); i > 0; i -= 1){
             let resourceReg = this.app.registry.resources.rnd();
             let resourceInstance = new ResourceInstance({
-                reg: resourceReg,
-                count: this.app.registry.resources.range(resourceReg, "spawnCount", 1)
+                type: resourceReg,
+                count: this.app.registry.range(resourceReg, "spawnCount", 1)
             })
             this.resources.push(resourceInstance);
 
